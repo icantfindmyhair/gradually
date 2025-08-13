@@ -1,0 +1,107 @@
+@import url('https://fonts.googleapis.com/css2?family=Agbalumo&family=Jua&family=Zen+Maru+Gothic&display=swap');
+body {
+    background-color: #D5F0C0;
+    background-image: url('images/background.jpg');
+    background-repeat: no-repeat;
+    background-size: cover; 
+    font-family: "Zen Maru Gothic", sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.title {
+    font-family: 'Agbalumo', cursive;
+    font-size: 32px;
+    color: #563921;
+}
+
+/* Form styling */
+.form {
+    border-radius: 15px;
+    padding: 30px;
+    max-width: 350px;
+    margin: 50px auto;
+    text-align: center;
+}
+
+.form input {
+    font-family: "Zen Maru Gothic", sans-serif;
+    color:#13440c
+}
+
+h1 {
+    font-family: 'Agbalumo', cursive;
+    color: #13440c;
+    font-size: 50px;
+    margin-bottom: 15px;
+}
+
+h3 {
+    font-family: 'Agbalumo', cursive;
+    color: #13440c;
+    font-size: 30px;
+}
+
+p {
+    font-family: "Zen Maru Gothic", sans-serif;
+    color: white;
+    font-size: 15px;
+}
+
+input[type="text"], input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    border: 2px solid #563921;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+input[type="submit"] {
+    background-color: #4f7251;
+    color: white;
+    border: 2px solid white;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: "Zen Maru Gothic", sans-serif;
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+input[type="submit"]:hover {
+    background-color: #13440c;
+}
+
+label {
+    font-size: 15px;
+    color: #D5F0C0;
+}
+
+a {
+    color:  #D5F0C0;
+    text-decoration: none;
+    font-size: 15px;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.error-snackbar {
+    background-color: #ffe2e2ff;
+    border: 2px solid #db2525ff;
+    color: #db2525ff;
+    padding: 10px;
+    text-align: center;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    animation: fadein 0.5s;
+}
+
+@keyframes fadein {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+
+
