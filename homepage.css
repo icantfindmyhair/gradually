@@ -1,0 +1,126 @@
+body {
+    display: flex;
+    background-color: #D4DEDDff;
+    flex-direction: column;
+    height: 100vh;
+    margin: 0;
+}
+
+/* ------------------------COPY HEADER------------------------ */
+.top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 60px;
+    background-color: transparent;
+    position: relative;
+}
+
+.hamburger {
+    position: absolute;
+    left: 20px;
+    font-size: 30px;
+    cursor: pointer;
+    background: none;
+    border: none;
+}
+
+.logout-btn {
+    position: absolute;
+    right: 20px;
+    text-decoration: none;
+    background-color: #2B3C48ff;
+    color: #D4DEDDff;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+a.logout-btn,
+a.logout-btn:visited,
+a.logout-btn:hover,
+a.logout-btn:active {
+    text-decoration: none;
+}
+
+.top-bar .title {
+    text-align: center;
+    text-decoration: none;
+    font-family: 'Agbalumo', cursive;
+    font-size: 30px;
+    color: #2B3C48ff;
+}
+
+a.title,
+a.title:visited,
+a.title:hover,
+a.title:active {
+    text-decoration: none;
+}
+
+/* ------------------------UNTIL HERE HEADER------------------------ */
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    flex-grow: 1;
+    gap: 10px;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.card {
+    background-color: #ffffff80;
+    border: 3px solid #2B3C48ff;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+}
+
+.icon-placeholder {
+    width: 256px;
+    height: 256px;
+    border-radius: 50%;
+    object-fit: contain;
+    margin-bottom: 10px;
+    transition: opacity 0.4s ease;
+}
+
+.card-title {
+    font-family: 'Agbalumo', cursive;
+    font-size: 24px;
+    color: #2B3C48ff;
+    transition: opacity 0.4s ease;
+}
+
+.card-subtitle {
+    font-size: 30px;
+    color: #2B3C48ff;
+    font-family: 'Zen Maru Gothic', sans-serif;
+    opacity: 0;
+    position: absolute;
+    text-align: center;
+    padding: 0 10px;
+    transition: opacity 0.4s ease;
+}
+
+.card:hover .icon-placeholder,
+.card:hover .card-title {
+    opacity: 0;
+}
+
+.card:hover .card-subtitle {
+    opacity: 1;
+}
