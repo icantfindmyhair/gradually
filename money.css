@@ -1,0 +1,67 @@
+.subTitle{
+    text-align: center;
+    text-decoration: none;
+    font-family: 'Agbalumo', cursive;
+    font-size: 50px;
+    color: #2B3C48ff;
+}
+
+.pacifico-regular {
+  font-family: "Pacifico", cursive;
+  font-weight: 400;
+  font-style: normal;
+}
+
+input[type=text] {
+    border: none;
+    border-bottom: 2px solid black;
+    width:400px; 
+    padding:12px;
+}
+
+/* Wrap the form in a card container */
+.form-card {
+    background: rgba(255, 255, 255, 0.2); /* semi-transparent to blend with bg */
+    backdrop-filter: blur(8px);           /* glass effect */
+    border-radius: 12px;                  /* rounded corners */
+    padding: 20px;
+    width: 1000px;
+    margin: 0 auto;                       /* center */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* subtle shadow */
+}
+
+/* Style labels & inputs */
+.form-card td{
+    padding-right:10px;
+}
+.form-card label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: bold;
+}
+
+.form-card input[type="text"],
+.form-card input[type="date"],
+.form-card input[type="number"] {
+    width: 400px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    background: rgba(255, 255, 255, 0.8);
+}
+
+/* Submit button */
+.form-card input[type="submit"] {
+    background-color: #2c3e50;
+    color: white;
+    border: none;
+    padding: 10px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 50%;
+}
+
+.form-card button:hover {
+    background-color: #1a252f;
+}
