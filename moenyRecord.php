@@ -14,7 +14,7 @@
         <!--Font-->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Moirai+One&family=Pacifico&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Coiny&display=swap" rel="stylesheet">
         
         <!--Custom CSS-->
         <link rel="stylesheet" href="hamburger.css">    
@@ -38,49 +38,57 @@
         <!--Start of Content-->
         <!--Title-->
         <header>
-            <div class="subTitle pacifico-regular mb-3">New Transaction</div>
+            <div class="subTitle coiny-regular mb-3">New Transaction</div>
         </header>
 
         <section class="main container-fluid ">
+            <!--Type selection button-->
+            <div class= "type-card">
+                
+            </div>
+
+            <!--Input area-->
             <div class="form-card d-flex justify-content-center align-items-center">
                 <table>
                     <form action="moneyDashboard.php" method="post">
                     <tr>
-                        <td><label for="date">Date</label></td>
-                        <td><input type="text"></td>
+                        <td><label class="coiny-regular" for="date">Date</label></td>
+                        <td><input id="date" type="date" required></td>
                     </tr>
                     <tr>
-                        <td><label for="amount">Amount</label></td>
-                        <td><input type="text"></td>
+                        <td><label class="coiny-regular" for="category">Category</label></td>
+                        <td><input id="category" type="text" required></td>
+                    </tr>                    
+                    <tr>
+                        <td><label class="coiny-regular" for="amount">Amount</label></td>
+                        <td><input id="amount" type="text" required></td>
                     </tr> 
                     <tr>
-                        <td><label for="category">Category</label></td>
-                        <td><input type="text"></td>
+                        <td><label class="coiny-regular" for="account_type">Account</label></td>
+                        <td><input id="account_type" type="text" required></td>
                     </tr>
                     <tr>
-                        <td><label for="account_type">Account</label></td>
-                        <td><input type="text"></td>
-                    </tr>
-                    <tr>
-                        <td><label for="Desc">Description</label></td>
-                        <td><input type="text"></td>
+                        <td style="vertical-align: top; padding-top: 6px;"><label class="coiny-regular" for="Desc">Description</label></td>
+                        <td><textarea id="Desc" class="form-control" id="message" name="message" rows="4"></textarea></td>
                     </tr>
                     <tr>
                         <td></td>
-                        <td colspan="2" style="text-align:center"><input type="submit" value="Submit"></td>
+                        <td><input type="submit" class="coiny-regular" value="Submit"></td>
                     </tr>                                                            
                     </form>
                 </table>            
             </div>
+            <!--End of input area-->
         </section>
-    
 
 
 
-
-
-
-
-
+        <!--Script for date autofill function-->
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                const today = new Date().toISOString().split('T')[0]; 
+                document.getElementById("date").value = today;
+            });
+        </script>
     </body>
 </html>

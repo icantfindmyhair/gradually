@@ -1,12 +1,4 @@
 /*Copy from homepage.css*/
-body {
-    display: flex;
-    background-color: #D4DEDDff;
-    flex-direction: column;
-    height: 100vh;
-    margin: 0;
-}
-
 .top-bar {
     display: flex;
     align-items: center;
