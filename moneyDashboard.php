@@ -29,6 +29,7 @@
         <a href="homepage.php" class="title">Gradually</a>
         <a href="logout.php" class="logout-btn">Log out</a>
     </div>
+    <!--End of header-->
 
     </body>
 </html>

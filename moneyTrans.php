@@ -29,11 +29,13 @@
     </head>
     
     <body>
+        <!--Header-->
         <div class="top-bar">
             <button class="hamburger" style="color: #ffffff;">&#9776;</button>
             <a href="homepage.php" style="color: #ffffff;" class="title">Gradually</a>
             <a href="logout.php" class="logout-btn">Log out</a>
         </div>
+        <!--End of header-->
 
         <!--Start of Content-->
         <!--Title-->
