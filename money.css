@@ -50,7 +50,7 @@ body {
     /* glass effect*/
     background:rgba(255, 255, 255, 0.4);
     backdrop-filter: blur(8px);
-    
+
     border-radius: 12px;
     padding: 20px;
     width: 1300px;
@@ -78,6 +78,19 @@ body {
     border: none;
     border-bottom: 1px solid #2c3e50;
     margin-bottom: 12px;
+}
+/* selection */
+.form-card #account_type{
+    background: transparent;
+    width: 700px;
+    padding: 10px;
+    border: none;
+    border-bottom: 1px solid #2c3e50;
+    margin-bottom: 12px;
+}
+
+.form-card #account_type{
+    font-size: 32px;
 }
 
 .form-card textarea {

@@ -65,11 +65,17 @@
                             </tr>                    
                             <tr>
                                 <td><label class="coiny-regular" for="amount">Amount</label></td>
-                                <td><input id="amount" type="text" required></td>
+                                <td><input id="amount" type="number" required></td>
                             </tr> 
                             <tr>
                                 <td><label class="coiny-regular" for="account_type">Account</label></td>
-                                <td><input id="account_type" type="text" required></td>
+                                <!-- <td><input id="account_type" type="text" required></td> -->
+                                <td><select name="account_type" id="account_type">
+                                    <option value="cash">Cash</option>
+                                    <option value="ewallet">E-wallet</option>
+                                    <option value="Card">Card</option>
+                                    <option value="BankAccont">Back Account</option>
+                                </select></td>
                             </tr>
                             <tr>
                                 <td style="vertical-align: top; padding-top: 6px;"><label class="coiny-regular" for="Desc">Description</label></td>
