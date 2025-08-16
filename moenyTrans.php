@@ -19,7 +19,7 @@
         <!--Custom CSS-->
         <link rel="stylesheet" href="hamburger.css">    
         <link rel="stylesheet" href="header.css">
-        <link rel="stylesheet" href="money.css">
+        <link rel="stylesheet" href="moneyT.css">
 
         <!--Sidebar-->
         <?php include 'hamburger.php'; ?>
