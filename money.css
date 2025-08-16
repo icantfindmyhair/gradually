@@ -20,16 +20,43 @@ body {
   font-style: normal;
 }
 
+/* button */
+.type-card {
+  display: flex;
+  justify-content: center; 
+  gap: 24px;
+  margin-bottom: 20px;
+}
+
+.type-card button {
+    width: 570px;
+    height: 60px;
+    margin: 15px;
+    font-size:30px;
+    color: white;
+    background-color: #2c3e50;
+    border-radius: 5px;
+}
+
+.type-card button:hover {
+    background-color: #1a252f;    
+}
+
+.type-card button.active {
+    background-color: #0b1014;    
+}
 /* Wrap the form in a card container */
 .form-card {
-    background: #D4DEDD; /* semi-transparent to blend with bg */
-    opacity: 80%;           /* glass effect */
-    border-radius: 12px;                  /* rounded corners */
+    /* glass effect*/
+    background:rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(8px);
+    
+    border-radius: 12px;
     padding: 20px;
     width: 1300px;
     height: 800px;
-    margin: 0 auto;                       /* center */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* subtle shadow */
+    margin: 0 auto;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 /* Style labels & inputs */
@@ -78,6 +105,7 @@ body {
 .form-card textarea:not(:placeholder-shown) {
     background: rgba(170, 170, 170, 0.29);
 }
+
 /* Submit button */
 .form-card input[type="submit"] {
     background-color: #2c3e50;
@@ -88,7 +116,6 @@ body {
     width: 300px;
     height:80px;
 }
-
 .form-card input[type="submit"]:hover {
     background-color: #1a252f;
 }
