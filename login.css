@@ -1,18 +1,18 @@
 @import url('https://fonts.googleapis.com/css2?family=Agbalumo&family=Jua&family=Zen+Maru+Gothic&display=swap');
 body {
-    background-color: #D5F0C0;
-    background-image: url('images/background.jpg');
+    background-color: #2A3B47ff;
+    background-image: url('images/background.gif');
     background-repeat: no-repeat;
     background-size: cover; 
     font-family: "Zen Maru Gothic", sans-serif;
-    margin: 0;
+    margin-top: 8rem;
     padding: 0;
 }
 
 .title {
     font-family: 'Agbalumo', cursive;
     font-size: 32px;
-    color: #563921;
+    color: #6C858Dff;
 }
 
 /* Form styling */
@@ -26,19 +26,19 @@ body {
 
 .form input {
     font-family: "Zen Maru Gothic", sans-serif;
-    color:#13440c
+    color:#2A3B47ff
 }
 
 h1 {
     font-family: 'Agbalumo', cursive;
-    color: #13440c;
+    color: #FFFFFFff;
     font-size: 50px;
     margin-bottom: 15px;
 }
 
 h3 {
     font-family: 'Agbalumo', cursive;
-    color: #13440c;
+    color: #FFFFFFff;
     font-size: 30px;
 }
 
@@ -58,7 +58,7 @@ input[type="text"], input[type="password"] {
 }
 
 input[type="submit"] {
-    background-color: #4f7251;
+    background-color: #2A3B47ff;
     color: white;
     border: 2px solid white;
     padding: 10px 15px;
@@ -70,22 +70,22 @@ input[type="submit"] {
 }
 
 input[type="submit"]:hover {
-    background-color: #13440c;
+    background-color: #090E14ff;
 }
 
 label {
     font-size: 15px;
-    color: #D5F0C0;
+    color: #D4DDDDff;
 }
 
 a {
-    color:  #D5F0C0;
-    text-decoration: none;
+    color:  #D4DDDDff;
+    text-decoration-style: underline;
     font-size: 15px;
 }
 
 a:hover {
-    text-decoration: underline;
+    cursor: pointer;
 }
 
 .error-snackbar {

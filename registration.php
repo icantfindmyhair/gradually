@@ -13,8 +13,8 @@
 		    $email = mysqli_real_escape_string($con, $email);
 		    $password = stripslashes($_REQUEST['password']);
 		    $password = mysqli_real_escape_string($con, $password);
-		    $reg_date = date('Y-m-d H:i:s');
-		    $query = "INSERT into `users` (username, password, email, reg_date) VALUES ('$username', '".md5($password)."', '$email', '$reg_date')";
+		    $create_day_time = date('Y-m-d H:i:s');
+		    $query = "INSERT into `users` (username, password, email, create_day_time) VALUES ('$username', '".md5($password)."', '$email', '$create_day_time')";
 		    $result = mysqli_query($con, $query);
 		    if ($result) {
 		        echo "<div class='form'>
