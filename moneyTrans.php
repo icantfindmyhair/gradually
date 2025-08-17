@@ -71,7 +71,6 @@
                             </tr> 
                             <tr>
                                 <td><label class="coiny-regular" for="account_type">Account</label></td>
-                                <!-- <td><input id="account_type" type="text" required></td> -->
                                 <td><select name="account_type" id="account_type">
                                     <option value="cash">Cash</option>
                                     <option value="ewallet">E-wallet</option>
