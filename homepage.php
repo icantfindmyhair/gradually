@@ -83,7 +83,7 @@ updateClock();
             <div class="card-subtitle">Money Tracker</div>
         </div>
 
-        <div class="card" onclick="location.href='https://example.com/4'">
+        <div class="card" onclick="location.href='habitTracker.php'">
             <img class="icon-placeholder" src="images/habit.svg" alt="Habit Tracker">
             <div class="card-title">Build A Habit</div>
             <div class="card-subtitle">Habit Tracker</div>
