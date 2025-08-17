@@ -1,5 +1,19 @@
-<?php session_start()?>
+<?php 
+session_start();
+//include("auth.php");
+require("database.php");
 
+//Based on month query
+$labels = [];
+$values = [];
+
+$month = isset($_GET['month']) ? intval($_GET['month']) : date("n"); // 1–12
+$year  = isset($_GET['year']) ? intval($_GET['year']) : date("Y");
+if ($month < 1) { $month = 12; $year--; }
+if ($month > 12) { $month = 1; $year++; }
+//Convert to word
+$monthName = date("F", mktime(0,0,0,$month,1,$year));
+?>
 <!DOCTYPE html>
 <html>
     <head>
@@ -13,8 +27,13 @@
         <link rel="stylesheet" href="hamburger.css">
         <link rel="stylesheet" href="header.css">
         <link rel="stylesheet" href="moneyD.css">
+
+        <!--Chart.js-->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        
         <!--Google Fonts-->
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"/>
+        
         <!--Sidebar-->    
         <?php include 'hamburger.php'; ?>
         <script src="hamburger.js"></script>
@@ -26,8 +45,8 @@
     </head>
     <body>
 
-    <!--Header-->
     <div class="container-fluid">
+        <!--Header-->
         <div class="top-bar">
             <button class="hamburger">&#9776;</button>
             <a href="homepage.php" class="title">Gradually</a>
@@ -39,15 +58,15 @@
         <!--Top selection-->
         <div class="top-selection">
             <div class="month-bar">
-                <button class="material-symbols-outlined">arrow_back_ios</button>
-                <div class="Month coiny-regular">August</div>
-                <button class="material-symbols-outlined">arrow_forward_ios</button>
+                <a href="?month=<?= $month-1 ?>&year=<?= $year ?>"><button class="material-symbols-outlined">arrow_back_ios</button></a>
+                <div class="Month coiny-regular"><?php echo $monthName. " ". $year ?></div>
+                <a href="?month=<?= $month+1 ?>&year=<?= $year ?>"><button class="material-symbols-outlined">arrow_forward_ios</button></a>
             </div>
-            <div class= "tabs-bar">
-                <button class="tab coiny-regular">Daily</button>
-                <button class="tab coiny-regular">Weekly</button>
-                <button class="tab active coiny-regular">Monthly</button>
-                <button class="tab coiny-regular">Yearly</button>
+            <div id="selectionButtons" class= "tabs-bar">
+                <button class="tab selectionButton coiny-regular">Daily</button>
+                <button class="tab selectionButton coiny-regular">Weekly</button>
+                <button class="tab selectionButton active coiny-regular">Monthly</button>
+                <button class="tab selectionButton coiny-regular">Yearly</button>
             </div>
         </div>
         <!-- End of Top selection-->
@@ -62,9 +81,11 @@
                     <div class="summaryVisual">
 
                         <div class="moneyStatusBar">
+                            <canvas id="moneyBar"></canvas>
                         </div>
 
                         <div class="moneyPieChart">  
+                            <canvas id="moneyDoughnut"></canvas>
                         </div>                     
 
                         <div class="newTransactionButton">
@@ -104,5 +125,96 @@
         </div>
         <!--End of Dashboard-->
     </div>
+
+    <?php
+    //Query based on category, draw a doughnut chart and count expenses 
+    $queryMon = "SELECT category, SUM(amount) AS total
+                    FROM  transaction
+                    WHERE MONTH(`date`) = $month
+                    AND YEAR(`date`) = $year
+                    GROUP BY category
+                    ORDER BY total desc;
+                ";
+
+    $result = mysqli_query($con, $queryMon);
+    if(!$result) {
+        die(mysqli_error($con));
+    }
+    if(mysqli_num_rows($result)=== 0 ) {
+        echo '<div> No data. </div>';
+    } else {
+        while($row = mysqli_fetch_assoc($result)) {
+            $labels[] = $row['category'];
+            $values[] = $row['total'];//Correct
+        }
+    }
+    ?>
+    
+    <script>
+    //Convert PHP to JavScript, https://www.w3schools.com/php/func_json_encode.asp
+    let lbs = <?php echo json_encode($labels) ?>;
+    let vals = <?php echo json_encode($values) ?>;
+
+    //Convert to float data type
+    vals = vals.map(v => parseFloat(v));
+   
+    const colorPalette = ['#D5DFE5','#7F9172','#567568','#B49594','#C9B1BD'];
+    const bgColor = colorPalette.slice(0,lbs.length);
+
+    //Limit the doughnut has at most 5 viariables, https://www.w3schools.com/js/js_array_reference.asp
+    if(lbs.length > 5) {
+        //Keep the first 4 variables
+        const tempLBS = lbs.slice(0,4);
+        const tempVALS = vals.slice(0,4);
+        
+        const genCat = 'Others';
+        const sumTot = vals.reduce((accu, curr) => accu + curr, 0);
+        const sumLeft = tempVALS.reduce((accu, curr) => accu + curr, 0);
+        const leftVals = sumTot - sumLeft;
+
+        tempLBS.push(genCat);
+        tempVALS.push(leftVals);
+
+        //Assign back
+        lbs = tempLBS;
+        vals = tempVALS;
+    } 
+
+    //draw donut with chart.js
+    const dnt = document.getElementById('moneyDoughnut');
+    const myDoughnutChart = new Chart(dnt, {
+        type: 'doughnut',
+        data:{
+            labels: lbs,
+            datasets: [{
+            data: vals,
+            backgroundColor: bgColor,
+            borderWidth:0,
+            hoverOffset:4
+            }]
+        },
+        options: {
+            plugins: {
+                legend: {
+                    labels: {
+                        font: {
+                            size: 16
+                        },
+                        color: '#000'
+                    }
+                }
+            }
+        }
+    });
+
+    //Script for "selection" button active
+    document.getElementById('selectionButtons').addEventListener('click', (e)=>{
+        const btn = e.target.closest('.selectionButton');
+        if (!btn) return;
+            document.querySelectorAll('#selectionButtons .selectionButton').forEach(b=>b.classList.remove('active'));
+            btn.classList.add('active');
+        });
+
+    </script>
     </body>
 </html>

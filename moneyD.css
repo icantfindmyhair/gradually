@@ -34,9 +34,14 @@ body {
   margin-left: 200px;
 }
 .Month{
-  font-size: 72px;
+  font-size: 60px;
 }
-.month-bar button{
+
+.month-bar a{
+  display: flex;
+  text-decoration: none;
+}
+.month-bar a button{
   border: none;
   background-color: transparent;
   cursor: pointer;
@@ -97,6 +102,8 @@ body {
 .moneyPieChart{
   width: 500px;
   height: 480px;
+  display: flex;
+  justify-content: center;
 }
 
 .newTransactionButton{

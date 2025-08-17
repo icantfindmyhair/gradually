@@ -1,4 +1,32 @@
-<?php session_start()?>
+<?php 
+//include("auth.php");
+require("database.php");
+session_start();
+
+$status = "";
+if(isset($_POST['new_trans']) && $_POST['new_trans'] == 1){
+    $date = $_REQUEST['date'];
+    $date = date("Y-m-d", strtotime($date));
+    $category = $_REQUEST['category'];
+    $amount = $_REQUEST['amount'];
+    $account_type = $_REQUEST['account_type'];
+    $desc = $_REQUEST['desc'] ?? '';
+    $type = $_REQUEST['type_handler'];
+    $userId = $_SESSION['user_id'] ?? '1';
+
+    $ins_query = "INSERT into transaction(`amount`,`type`,`category`,`account_type`,`date`,`description`,`user_id`)
+                VALUES('$amount','$type','$category','$account_type','$date','$desc','$userId')";
+    mysqli_query($con,$ins_query)
+    or die(mysqli_error($con));
+
+    //Display successfully inserted message and redirect user to dashboard page.
+    $status = "Transaction inserted successfully!";
+    echo "<script>
+            alert('$status');
+            window.location.href = 'moneyDashboard.php';
+          </script>";    
+    }
+?>
 
 <!DOCTYPE html>
 <html>
@@ -55,23 +83,24 @@
                     <!--Input area-->
                     <div class="d-flex justify-content-center align-items-center">
                         <table>
-                            <form action="moneyDashboard.php" method="post">
+                            <form action="" method="post">
                             <input type="hidden" name="type_handler" id="type_handler" value="expense"/>
+                            <input type="hidden" name="new_trans" value="1"/>
                             <tr>
                                 <td><label class="coiny-regular" for="date">Date</label></td>
-                                <td><input id="date" type="date" required></td>
+                                <td><input id="date" name="date" type="date" required></td>
                             </tr>
                             <tr>
                                 <td><label class="coiny-regular" for="category">Category</label></td>
-                                <td><input id="category" type="text" required></td>
+                                <td><input id="category" name="category" type="text" required></td>
                             </tr>                    
                             <tr>
                                 <td><label class="coiny-regular" for="amount">Amount</label></td>
-                                <td><input id="amount" type="number" required></td>
+                                <td><input id="amount" name="amount" type="number" step="0.01" min="0" placeholder="Enter Price (RM)" required></td>
                             </tr> 
                             <tr>
                                 <td><label class="coiny-regular" for="account_type">Account</label></td>
-                                <td><select name="account_type" id="account_type">
+                                <td><select name="account_type" name="account_type" id="account_type">
                                     <option value="cash">Cash</option>
                                     <option value="ewallet">E-wallet</option>
                                     <option value="Card">Card</option>
@@ -80,11 +109,11 @@
                             </tr>
                             <tr>
                                 <td style="vertical-align: top; padding-top: 6px;"><label class="coiny-regular" for="Desc">Description</label></td>
-                                <td><textarea id="Desc" class="form-control" id="message" name="message" rows="4"></textarea></td>
+                                <td><textarea id="desc" class="form-control" id="desc" name="desc" rows="4"></textarea></td>
                             </tr>
                             <tr>
                                 <td></td>
-                                <td><input type="submit" class="coiny-regular" value="Submit"></td>
+                                <td><input type="submit" class="coiny-regular" value="Submit" onclick="confirmMsg()"></td>
                             </tr>                                                            
                             </form>
                         </table>            
@@ -108,6 +137,10 @@
             btn.classList.add('active');
             document.getElementById('type_handler').value = btn.dataset.value; // "expense" or "income"
             });
+            
+            function confirmMsg() {
+                alert($status);
+            }
         </script>
     </body>
 </html>
