@@ -104,10 +104,10 @@ if(isset($_POST['new_trans']) && $_POST['new_trans'] == 1){
                             <tr>
                                 <td><label class="coiny-regular" for="account_type">Account</label></td>
                                 <td><select name="account_type" name="account_type" id="account_type">
-                                    <option value="cash">Cash</option>
-                                    <option value="ewallet">E-wallet</option>
+                                    <option value="Cash">Cash</option>
+                                    <option value="E-wallet">E-wallet</option>
                                     <option value="Card">Card</option>
-                                    <option value="BankAccont">Back Account</option>
+                                    <option value="BankAccount">Back Account</option>
                                 </select></td>
                             </tr>
                             <tr>

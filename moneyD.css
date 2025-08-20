@@ -97,14 +97,24 @@ body {
 .moneyStatusBar{
   width: 500px;
   height: 103px;
+  display:flex;
+  overflow: hidden;
+  align-items: center;
+  justify-content: center;
 }
 
-.box{
-  background-color: lightblue;
-  width: 100px;
+.moneyStatusBar .box{
   height: 30px;
+  display: block;
+  border: 1px solid #ffffff;
 }
 
+.incomebox{
+  background-color: #A7F6D1;
+}
+.expensebox{
+  background-color: #F6A7A7;
+}
 
 .moneyPieChart{
   width: 500px;
@@ -121,25 +131,59 @@ body {
   align-items: center;
 }
 
+.calcContent{
+  width: 655px;
+  height: 683px; 
+}
 
-
-
-
-
-
-
+.calcIncomeExpenses{
+  width:655px;
+  height:300px;
+  overflow-y:auto;
+  overflow-x:hidden;
+  scrollbar-width: thin;
+  scrollbar-color: #888 #ccc;
+}
 
 .rmLabel{
   text-align: right;
-  padding: 15px;
+  padding: 3px 30px;
 }
 .rmLabel label{
   font-size: 28px;
   color: white;
 }
-.calcIncomeExpenses {
-  width: 655px;      /* adjust as needed */
-  height: 683px;     /* adjust as needed */
+
+.Income, .Expenses, .Balance{
+  display: flex;
+  justify-content: space-between;
+  color: #ffffff;
+  font-size: 28px;
+  padding: 5px 30px;
+}
+
+.wrapthem{
+  display: flex;
+  justify-content: space-between;
+  color: #ffffff;
+  font-size: 20px;
+  padding: 1px 100px;
+}
+
+.divider{
+  height: 1px;
+  background-color: white;
+  margin:0px 30px;
+}
+.calcType{
+  width: 655px;
+  height: 327px;
+}
+
+.labelAccount{
+  color: #ffffff;
+  font-size: 32px;
+  padding:5px 30px;
 }
 
 .transactionButton{
@@ -153,7 +197,18 @@ body {
 }
 
 .transactionButton:hover{
-  background-color: #999696;
+  background-color: #777e7e;
+}
+
+.calcTypedetail{
+  color: #ffffff;
+  font-size: 28px;
+  padding:5px 30px;
+}
+
+.wrapthemAccount{
+  display: flex;
+  justify-content: space-between;
 }
 
 /* Last transaction[right-block content] */
@@ -167,15 +222,47 @@ body {
   background: #A5AAAA;
 }
 
+.transhistory{
+  overflow-y:auto;
+  overflow-x:hidden;
+  scrollbar-width: thin;
+  scrollbar-color: #888 #ccc;
+}
 .commonLabel{
   display: flex;
   width: 529px;
   height:40px;
   justify-content: space-between;
-  padding: 15px;
+  padding: 5px 30px;
 }
 
 .commonLabel label{
   font-size: 28px;
   color: white;
+}
+
+.wraphistory{
+  width:528px;
+  height: 85px;
+  display: flex;
+  justify-content: flex-start;
+  white-space: nowrap;
+  overflow: hidden; 
+  gap: 15px;
+  font-size: 28px;
+  color: white;
+  padding:5px 30px;
+  align-items: center;
+  border-bottom: 2px inset rgba(0,0,0,0.25);
+}
+.wraphistory .date{
+  flex: 0 0 80px;
+}
+.wraphistory .wrapName{
+  text-align: left;
+  flex:1;
+}
+
+.wraphistory:hover{
+  background-color: #777e7e;
 }

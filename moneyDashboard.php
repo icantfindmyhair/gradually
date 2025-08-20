@@ -84,9 +84,55 @@ $monthName = date("F", mktime(0,0,0,$month,1,$year));
                 <div class="labelSum coiny-regular">Summary</div>
                 <section class="summary-content">
                     <div class="summaryVisual">
+                        <?php 
+                        //1. moneyBar- Month
+                        $queryTotInc = "SELECT SUM(amount) AS total
+                                        FROM transaction
+                                        WHERE MONTH(`date`) = $month
+                                        AND YEAR(`date`) = $year
+                                        AND type = 'income';
+                                        ";
 
+                        $result1 = mysqli_query($con, $queryTotInc);
+                        if(!$result1) {
+                            die(mysqli_error($con));
+                        }
+                        if(mysqli_num_rows($result1) === 0 ) {
+                            echo '<div> No data. </div>';
+                        } else {
+                            while($row = mysqli_fetch_assoc($result1)) {
+                                $totalIncome = (float)($row['total'] ?? 0);
+                            }
+                        }
+
+                        $queryTotExp = "SELECT SUM(amount) AS total
+                                        FROM transaction
+                                        WHERE MONTH(`date`) = $month
+                                        AND YEAR(`date`) = $year
+                                        AND type = 'expense';
+                                        ";
+
+                        $result2 = mysqli_query($con, $queryTotExp);
+                        if(!$result2) {
+                            die(mysqli_error($con));
+                        }
+                        if(mysqli_num_rows($result2) === 0 ) {
+                            echo '<div> No data. </div>';
+                        } else {
+                            while($row = mysqli_fetch_assoc($result2)) {
+                                $totalExpenses = (float)($row['total'] ?? 0);
+                            }
+                        }
+                        //Start of money bar chart
+                        //Width for the overall bar: 359px
+                        $BAR_W = 359;
+                        $den = max(1,$totalIncome + $totalExpenses); //To avoid divided by 0
+                        $widthForIncBox = $BAR_W * ($totalIncome  / $den);
+                        $widthForExpBox = $BAR_W * ($totalExpenses / $den);
+                        ?>
                         <div class="moneyStatusBar">
-                            <span class="box incomebox" style="background-color:lightgreen; width : <?php echo $widthForIncBox?> px; height: <?php echo $heightForIncBox?> px"></span><span class="box expensebox" style="background-color: lightred; width: <?php echo $widthForIncBox?>px; height: <?php echo $heightForIncBox?>px"></span> 
+                            <span class="box incomebox" style="width : <?php echo $widthForIncBox?>px;"></span>
+                            <span class="box expensebox" style="width: <?php echo $widthForExpBox?>px;"></span> 
                         </div>
 
                         <div class="moneyPieChart">  
@@ -104,10 +150,81 @@ $monthName = date("F", mktime(0,0,0,$month,1,$year));
                             <label id="rm" class="coiny-regular">RM</label>
                         </div>
                         <div class="calcIncomeExpenses">
-                            
+                            <div class="Income coiny-regular">
+                                <div class="labelIncome">Income</div>
+                                <div class="amountIncome" style="color:#A7F6D1"><?php echo number_format($totalIncome,2) ?></div>
+                            </div>
+                            <div class="Expenses coiny-regular">
+                                <div class="labelExpenses">Expenses</div>
+                                <div class="amountExpenses" style="color:#F6A7A7;"><?php echo number_format($totalExpenses, 2) ?></div>
+                            </div>
+                            <!-- Details about exp-->
+                            <div class="detailExp coiny-regular">
+                                <?php
+                                //2. Query based on category, draw a doughnut chart and count expenses 
+                                $queryExpMon = "SELECT category, SUM(amount) AS total
+                                                FROM  transaction
+                                                WHERE MONTH(`date`) = $month
+                                                AND YEAR(`date`) = $year
+                                                AND type = 'expense'
+                                                GROUP BY category
+                                                ORDER BY total desc;
+                                            ";
+
+                                $result2 = mysqli_query($con, $queryExpMon);
+                                if(!$result2) {
+                                    die(mysqli_error($con));
+                                }
+                                if(mysqli_num_rows($result2)=== 0 ) {
+                                    echo '<div> No data. </div>';
+                                } else {
+                                    while($row = mysqli_fetch_assoc($result2)) {
+                                        $labels[] = $row['category'];
+                                        $values[] = (float)$row['total'];//Correct
+                                ?>
+                                <div class="wrapthem">
+                                    <div class="detailCat"><?php echo $row['category']?></div>
+                                    <div class="detailTot"><?php echo number_format((float)$row['total'],2)?></div>
+                                </div>     
+                                <?php }} ?>       
+                            </div>
+                            <div class="divider"></div>
+                            <div class="Balance coiny-regular">
+                                <div class="labelBalance">Balance</div>
+                                <div class="amountBalance"><?php $balance = $totalIncome - $totalExpenses; echo number_format($balance,2) ?></div>
+                            </div>
+                            <div class="divider"></div>
+
                         </div>
-                        <div class="calcType">
-                            
+                        <div class="calcType coiny-regular">
+                            <div class="labelAccount">Account Type</div>
+                            <div class="calcTypedetail coiny-regular">
+                                <?php
+                                //3. Query based on payment type
+                                $queryExpMon = "SELECT account_type, SUM(amount) AS total
+                                                FROM  transaction
+                                                WHERE MONTH(`date`) = $month
+                                                AND YEAR(`date`) = $year
+                                                AND type = 'expense'
+                                                GROUP BY account_type
+                                                ORDER BY total desc;
+                                            ";
+
+                                $result3 = mysqli_query($con, $queryExpMon);
+                                if(!$result3) {
+                                    die(mysqli_error($con));
+                                }
+                                if(mysqli_num_rows($result3) === 0 ) {
+                                    echo '<div> No data. </div>';
+                                } else {
+                                    while($row = mysqli_fetch_assoc($result3)) {
+                                ?>
+                                <div class="wrapthemAccount">
+                                    <div class="detailType"><?php echo $row['account_type']?></div>
+                                    <div class="detailAccTot"><?php echo number_format((float)$row['total'],2)?></div>
+                                </div>     
+                                <?php }} ?>       
+                            </div>
                         </div>
                     </div>
                 </section>            
@@ -119,11 +236,38 @@ $monthName = date("F", mktime(0,0,0,$month,1,$year));
                 <div class="labelLastTransaction coiny-regular">Last Transaction</div>
                 <section class="trans-content">
                     <div class="commonLabel">
-                        <label id="date" class="coiny-regular">Date</label>
+                        <label id="datelabel" class="coiny-regular">Date</label>
                         <label id="rm" class="coiny-regular">RM</label>
                     </div>
-                    <div class="history">
-                    </div> 
+                    <div class="transhistory">
+                        <?php
+                        //3. Query based on payment type
+                        $queryEachTran = "SELECT amount, type, category, account_type, type, DAY(`date`) AS day, description
+                                        FROM  transaction
+                                        WHERE MONTH(`date`) = $month
+                                        AND YEAR(`date`) = $year
+                                        ORDER BY day desc;
+                                    ";
+
+                        $result4 = mysqli_query($con, $queryEachTran);
+                        if(!$result4) {
+                            die(mysqli_error($con));
+                        }
+                        if(mysqli_num_rows($result4) === 0 ) {
+                            echo '<div> No data. </div>';
+                        } else {
+                            while($row = mysqli_fetch_assoc($result4)) {
+                        ?>
+                        <div class="wraphistory coiny-regular">
+                            <div class="date"><?php echo $row['day'] ?></div>
+                            <div class="wrapName">
+                                    <div class="name"><?php echo $row['description'] ?></div>
+                                    <div class="cat" style="font-size: 20px;"><?php echo $row['category'] ?></div>
+                            </div>
+                            <div class="amount" style="color: <?php echo ($row['type'] === 'income') ? '#A7F6D1' : '#F6A7A7'; ?>"><?php echo number_format((float)$row['amount']) ?></div>
+                        </div>
+                        <?php }} ?>   
+                    </div>
                 </section>            
             </div>
             <!--End of right block-->
@@ -132,95 +276,14 @@ $monthName = date("F", mktime(0,0,0,$month,1,$year));
         <!--End of Dashboard-->
     </div>
 
-    <!--PPPPPPPHPHPHPHPPH-->
-    <?php
-    //1. moneyBar- Month
-    $queryTotInc = "SELECT SUM(amount) AS total
-                    FROM transaction
-                    WHERE type = 'income';
-                    ";
-
-    $result1 = mysqli_query($con, $queryTotInc);
-    if(!$result1) {
-        die(mysqli_error($con));
-    }
-    if(mysqli_num_rows($result1)=== 0 ) {
-        echo '<div> No data. </div>';
-    } else {
-        while($row = mysqli_fetch_assoc($result1)) {
-            $totalIncome = $row;
-        }
-    }
-
-    $queryTotExp = "SELECT SUM(amount) AS total
-                    FROM transaction
-                    WHERE type = 'expense';
-                    ";
-
-    $result2 = mysqli_query($con, $queryTotExp);
-    if(!$result2) {
-        die(mysqli_error($con));
-    }
-    if(mysqli_num_rows($result2)=== 0 ) {
-        echo '<div> No data. </div>';
-    } else {
-        while($row = mysqli_fetch_assoc($result2)) {
-            $totalExpenses = $row;
-        }
-    }
-
-    //2. Query based on category, draw a doughnut chart and count expenses 
-    $queryExpMon = "SELECT category, SUM(amount) AS total
-                    FROM  transaction
-                    WHERE MONTH(`date`) = $month
-                    AND YEAR(`date`) = $year
-                    AND type = 'expense'
-                    GROUP BY category
-                    ORDER BY total desc;
-                ";
-
-    $result2 = mysqli_query($con, $queryExpMon);
-    if(!$result2) {
-        die(mysqli_error($con));
-    }
-    if(mysqli_num_rows($result2)=== 0 ) {
-        echo '<div> No data. </div>';
-    } else {
-        while($row = mysqli_fetch_assoc($result2)) {
-            $labels[] = $row['category'];
-            $values[] = $row['total'];//Correct
-        }
-    }
-    ?>
-    
+    <!--PPPPPPPHPHPHPHPPH-->    
     <script>
     //Convert PHP to JavScript, https://www.w3schools.com/php/func_json_encode.asp
-    let totInc = <?php echo json_encode($totalIncome) ?>;
-    let totExp = <?php echo json_encode($totalExpenses) ?>;
     let lbs = <?php echo json_encode($labels) ?>;
     let vals = <?php echo json_encode($values) ?>;
 
     //Convert to float data type
-    vals = vals.map(v => parseFloat(v));
-
-    //Start of money bar chart
-    //Width for the overall bar: 359px
-    //Height for the overall bar: 30px
-    $widthForIncBox = (totInc / (totInc + totExp)) * 359;
-    $heightForIncBox = (totInc / (totInc + totExp)) * 30;
-    $widthForExpBox = (totExp / (totInc + totExp)) * 359;
-    $heightForExpBox = (totExp / (totInc + totExp)) * 30;
-
-
-
-
-
-
-
-
-
-
-
+    //vals = vals.map(v => parseFloat(v));
 
     //Start of money pie chart
     const colorPalette = ['#D5DFE5','#7F9172','#567568','#B49594','#C9B1BD'];
