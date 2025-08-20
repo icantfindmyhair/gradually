@@ -1,5 +1,9 @@
 <?php 
 session_start();
+
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 //include("auth.php");
 require("database.php");
 
@@ -13,6 +17,7 @@ if ($month < 1) { $month = 12; $year--; }
 if ($month > 12) { $month = 1; $year++; }
 //Convert to word
 $monthName = date("F", mktime(0,0,0,$month,1,$year));
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -81,7 +86,7 @@ $monthName = date("F", mktime(0,0,0,$month,1,$year));
                     <div class="summaryVisual">
 
                         <div class="moneyStatusBar">
-                            <canvas id="moneyBar"></canvas>
+                            <span class="box incomebox" style="background-color:lightgreen; width : <?php echo $widthForIncBox?> px; height: <?php echo $heightForIncBox?> px"></span><span class="box expensebox" style="background-color: lightred; width: <?php echo $widthForIncBox?>px; height: <?php echo $heightForIncBox?>px"></span> 
                         </div>
 
                         <div class="moneyPieChart">  
@@ -93,6 +98,7 @@ $monthName = date("F", mktime(0,0,0,$month,1,$year));
                         </div>
 
                     </div>
+
                     <div class="calcContent">
                         <div class="rmLabel">
                             <label id="rm" class="coiny-regular">RM</label>
@@ -126,24 +132,61 @@ $monthName = date("F", mktime(0,0,0,$month,1,$year));
         <!--End of Dashboard-->
     </div>
 
+    <!--PPPPPPPHPHPHPHPPH-->
     <?php
-    //Query based on category, draw a doughnut chart and count expenses 
-    $queryMon = "SELECT category, SUM(amount) AS total
+    //1. moneyBar- Month
+    $queryTotInc = "SELECT SUM(amount) AS total
+                    FROM transaction
+                    WHERE type = 'income';
+                    ";
+
+    $result1 = mysqli_query($con, $queryTotInc);
+    if(!$result1) {
+        die(mysqli_error($con));
+    }
+    if(mysqli_num_rows($result1)=== 0 ) {
+        echo '<div> No data. </div>';
+    } else {
+        while($row = mysqli_fetch_assoc($result1)) {
+            $totalIncome = $row;
+        }
+    }
+
+    $queryTotExp = "SELECT SUM(amount) AS total
+                    FROM transaction
+                    WHERE type = 'expense';
+                    ";
+
+    $result2 = mysqli_query($con, $queryTotExp);
+    if(!$result2) {
+        die(mysqli_error($con));
+    }
+    if(mysqli_num_rows($result2)=== 0 ) {
+        echo '<div> No data. </div>';
+    } else {
+        while($row = mysqli_fetch_assoc($result2)) {
+            $totalExpenses = $row;
+        }
+    }
+
+    //2. Query based on category, draw a doughnut chart and count expenses 
+    $queryExpMon = "SELECT category, SUM(amount) AS total
                     FROM  transaction
                     WHERE MONTH(`date`) = $month
                     AND YEAR(`date`) = $year
+                    AND type = 'expense'
                     GROUP BY category
                     ORDER BY total desc;
                 ";
 
-    $result = mysqli_query($con, $queryMon);
-    if(!$result) {
+    $result2 = mysqli_query($con, $queryExpMon);
+    if(!$result2) {
         die(mysqli_error($con));
     }
-    if(mysqli_num_rows($result)=== 0 ) {
+    if(mysqli_num_rows($result2)=== 0 ) {
         echo '<div> No data. </div>';
     } else {
-        while($row = mysqli_fetch_assoc($result)) {
+        while($row = mysqli_fetch_assoc($result2)) {
             $labels[] = $row['category'];
             $values[] = $row['total'];//Correct
         }
@@ -152,12 +195,34 @@ $monthName = date("F", mktime(0,0,0,$month,1,$year));
     
     <script>
     //Convert PHP to JavScript, https://www.w3schools.com/php/func_json_encode.asp
+    let totInc = <?php echo json_encode($totalIncome) ?>;
+    let totExp = <?php echo json_encode($totalExpenses) ?>;
     let lbs = <?php echo json_encode($labels) ?>;
     let vals = <?php echo json_encode($values) ?>;
 
     //Convert to float data type
     vals = vals.map(v => parseFloat(v));
-   
+
+    //Start of money bar chart
+    //Width for the overall bar: 359px
+    //Height for the overall bar: 30px
+    $widthForIncBox = (totInc / (totInc + totExp)) * 359;
+    $heightForIncBox = (totInc / (totInc + totExp)) * 30;
+    $widthForExpBox = (totExp / (totInc + totExp)) * 359;
+    $heightForExpBox = (totExp / (totInc + totExp)) * 30;
+
+
+
+
+
+
+
+
+
+
+
+
+    //Start of money pie chart
     const colorPalette = ['#D5DFE5','#7F9172','#567568','#B49594','#C9B1BD'];
     const bgColor = colorPalette.slice(0,lbs.length);
 
@@ -206,6 +271,7 @@ $monthName = date("F", mktime(0,0,0,$month,1,$year));
             }
         }
     });
+    //End of money pie chart
 
     //Script for "selection" button active
     document.getElementById('selectionButtons').addEventListener('click', (e)=>{

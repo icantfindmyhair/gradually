@@ -3,6 +3,9 @@
 require("database.php");
 session_start();
 
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 $status = "";
 if(isset($_POST['new_trans']) && $_POST['new_trans'] == 1){
     $date = $_REQUEST['date'];

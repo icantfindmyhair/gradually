@@ -90,14 +90,21 @@ body {
 }
 
 .summaryVisual {
-  width: 500px;      /* adjust as needed */
-  height: 683px;     /* adjust as needed */
+  width: 500px;      
+  height: 683px;     
 }
 
 .moneyStatusBar{
   width: 500px;
   height: 103px;
 }
+
+.box{
+  background-color: lightblue;
+  width: 100px;
+  height: 30px;
+}
+
 
 .moneyPieChart{
   width: 500px;
@@ -113,8 +120,6 @@ body {
   justify-content: center;
   align-items: center;
 }
-
-
 
 
 
