@@ -46,7 +46,9 @@ if(isset($_POST['new_trans']) && $_POST['new_trans'] == 1){
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Coiny&display=swap" rel="stylesheet">
-        
+        <link href="https://fonts.googleapis.com/css2?family=Agbalumo&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Agbalumo&family=Jua&family=Zen+Maru+Gothic&display=swap" rel="stylesheet">
+
         <!--Custom CSS-->
         <link rel="stylesheet" href="hamburger.css">    
         <link rel="stylesheet" href="header.css">

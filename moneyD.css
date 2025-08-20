@@ -147,7 +147,7 @@ body {
 
 .rmLabel{
   text-align: right;
-  padding: 3px 30px;
+  padding: 10px 30px;
 }
 .rmLabel label{
   font-size: 28px;
@@ -203,7 +203,7 @@ body {
 .calcTypedetail{
   color: #ffffff;
   font-size: 28px;
-  padding:5px 30px;
+  padding:10px 30px;
 }
 
 .wrapthemAccount{
@@ -216,7 +216,8 @@ body {
   font-size: 28px;
 }
 .trans-content{
-  display: grid;
+  display: flex;
+  flex-direction: column;
   width: 529px; 
   height: 683px; 
   background: #A5AAAA;
@@ -231,9 +232,9 @@ body {
 .commonLabel{
   display: flex;
   width: 529px;
-  height:40px;
+  height:50px;
   justify-content: space-between;
-  padding: 5px 30px;
+  padding: 10px 30px;
 }
 
 .commonLabel label{
@@ -244,14 +245,15 @@ body {
 .wraphistory{
   width:528px;
   height: 85px;
+  position: relative;
   display: flex;
   justify-content: flex-start;
   white-space: nowrap;
-  overflow: hidden; 
   gap: 15px;
   font-size: 28px;
   color: white;
   padding:5px 30px;
+  margin-bottom: 15px;
   align-items: center;
   border-bottom: 2px inset rgba(0,0,0,0.25);
 }
@@ -265,4 +267,46 @@ body {
 
 .wraphistory:hover{
   background-color: #777e7e;
+}
+
+/* Modification CSS */
+.forUpdateDeleteBtn{
+  position: relative;
+  border-bottom: 1px solid rgba(255,255,255,.25);
+}
+
+.modification{
+  position: absolute;
+  left: 14px; right: 14px;
+  top: 100%;
+
+  display: flex; justify-content: flex-end; gap: 8px;
+
+  opacity: 0; 
+  pointer-events: none;
+  transform: translateY(-6px);
+  transition: opacity .25s ease, transform .25s ease;
+}
+
+.modbox{
+  min-width: 100px;
+  height: 36px;
+  display: inline-flex; 
+  align-items: center; 
+  justify-content: center;
+  border: 1px inset #cfd6d8;
+  border-radius: 6px;
+  background-color: #D4DEDD;
+  font-size: 16px;
+  cursor: pointer;
+  z-index:1;
+}
+
+.modbox:hover{
+  background-color: rgb(133, 136, 136);
+}
+.forUpdateDeleteBtn:hover .modification, .modification:hover{
+  opacity: 1;                       
+  pointer-events: auto;
+  transform: translateY(0);
 }

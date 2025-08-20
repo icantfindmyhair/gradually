@@ -77,7 +77,7 @@ updateClock();
             <div class="card-subtitle">Diary Journal</div>
         </div>
 
-        <div class="card" onclick="location.href='https://example.com/3'">
+        <div class="card" onclick="location.href='moneyDashboard.php'">
             <img class="icon-placeholder" src="images/money.svg" alt="Money Tracker">
             <div class="card-title">Budgeting</div>
             <div class="card-subtitle">Money Tracker</div>

@@ -18,6 +18,9 @@ if ($month > 12) { $month = 1; $year++; }
 //Convert to word
 $monthName = date("F", mktime(0,0,0,$month,1,$year));
 
+//Get user id#
+$userId = $_SESSION['user_id'];
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -27,8 +30,6 @@ $monthName = date("F", mktime(0,0,0,$month,1,$year));
         <title>Money Tracker</title>
 
         <!--Bootstrap-->
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
         <link rel="stylesheet" href="hamburger.css">
         <link rel="stylesheet" href="header.css">
         <link rel="stylesheet" href="moneyD.css">
@@ -38,6 +39,10 @@ $monthName = date("F", mktime(0,0,0,$month,1,$year));
         
         <!--Google Fonts-->
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"/>
+        <link href="https://fonts.googleapis.com/css2?family=Agbalumo&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Agbalumo&family=Jua&family=Zen+Maru+Gothic&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
         
         <!--Sidebar-->    
         <?php include 'hamburger.php'; ?>
@@ -90,6 +95,7 @@ $monthName = date("F", mktime(0,0,0,$month,1,$year));
                                         FROM transaction
                                         WHERE MONTH(`date`) = $month
                                         AND YEAR(`date`) = $year
+                                        AND user_id = $userId
                                         AND type = 'income';
                                         ";
 
@@ -109,6 +115,7 @@ $monthName = date("F", mktime(0,0,0,$month,1,$year));
                                         FROM transaction
                                         WHERE MONTH(`date`) = $month
                                         AND YEAR(`date`) = $year
+                                        AND user_id = $userId
                                         AND type = 'expense';
                                         ";
 
@@ -166,6 +173,7 @@ $monthName = date("F", mktime(0,0,0,$month,1,$year));
                                                 FROM  transaction
                                                 WHERE MONTH(`date`) = $month
                                                 AND YEAR(`date`) = $year
+                                                AND user_id = $userId
                                                 AND type = 'expense'
                                                 GROUP BY category
                                                 ORDER BY total desc;
@@ -205,6 +213,7 @@ $monthName = date("F", mktime(0,0,0,$month,1,$year));
                                                 FROM  transaction
                                                 WHERE MONTH(`date`) = $month
                                                 AND YEAR(`date`) = $year
+                                                AND user_id = $userId
                                                 AND type = 'expense'
                                                 GROUP BY account_type
                                                 ORDER BY total desc;
@@ -241,11 +250,12 @@ $monthName = date("F", mktime(0,0,0,$month,1,$year));
                     </div>
                     <div class="transhistory">
                         <?php
-                        //3. Query based on payment type
+                        //3. Query all transaction made
                         $queryEachTran = "SELECT amount, type, category, account_type, type, DAY(`date`) AS day, description
                                         FROM  transaction
                                         WHERE MONTH(`date`) = $month
                                         AND YEAR(`date`) = $year
+                                        AND user_id = $userId
                                         ORDER BY day desc;
                                     ";
 
@@ -258,13 +268,21 @@ $monthName = date("F", mktime(0,0,0,$month,1,$year));
                         } else {
                             while($row = mysqli_fetch_assoc($result4)) {
                         ?>
-                        <div class="wraphistory coiny-regular">
-                            <div class="date"><?php echo $row['day'] ?></div>
-                            <div class="wrapName">
+                        <div class="forUpdateDeleteBtn">
+                            <div class="wraphistory coiny-regular">
+                                <div class="date"><?php echo $row['day'] ?></div>
+                                <div class="wrapName">
                                     <div class="name"><?php echo $row['description'] ?></div>
                                     <div class="cat" style="font-size: 20px;"><?php echo $row['category'] ?></div>
+                                </div>   
+                                <div class="amount" style="color: <?php echo ($row['type'] === 'income') ? '#A7F6D1' : '#F6A7A7'; ?>"><?php echo number_format((float)$row['amount']) ?></div>
                             </div>
-                            <div class="amount" style="color: <?php echo ($row['type'] === 'income') ? '#A7F6D1' : '#F6A7A7'; ?>"><?php echo number_format((float)$row['amount']) ?></div>
+                          
+                            <!--Allow user to modify transaction-->
+                            <div class="modification coiny-regular">
+                                <button class="updateBtn modbox">Update<span class="material-symbols-outlined">update</span></button>
+                                <button class="deleteBtn modbox">Delete<span class="material-symbols-outlined">delete</span></button>
+                            </div>
                         </div>
                         <?php }} ?>   
                     </div>
@@ -274,9 +292,7 @@ $monthName = date("F", mktime(0,0,0,$month,1,$year));
 
         </div>
         <!--End of Dashboard-->
-    </div>
-
-    <!--PPPPPPPHPHPHPHPPH-->    
+    </div>  
     <script>
     //Convert PHP to JavScript, https://www.w3schools.com/php/func_json_encode.asp
     let lbs = <?php echo json_encode($labels) ?>;
