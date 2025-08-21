@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 
+<?php
+session_start();
+require 'database.php';
+?>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -32,20 +36,37 @@
                 <button class="add-btn" id="open-form">+</button>
             </div>
 
-            <ul class="todo-items">
-                <li>
-                    <input type="checkbox" id="item1">
-                    <label for="item1">example1</label>
-                </li>
-                <li>
-                    <input type="checkbox" id="item2">
-                    <label for="item2">example2</label>
-                </li>
-                <li>
-                    <input type="checkbox" id="item3">
-                    <label for="item3">example3</label>
-                </li>
-            </ul>
+    <?php
+    date_default_timezone_set('Asia/Kuala_Lumpur');
+$today_day = strtolower(date('l'));
+$today_date = date('Y-m-d');
+$user_id = $_SESSION['user_id'];
+$sql = 'SELECT h.habit_id, h.habit_name, h.description, 
+               COALESCE(l.status, 0) AS status
+        FROM habit_type h
+        LEFT JOIN habit_log l 
+               ON h.habit_id = l.habit_id AND l.date = ?
+        WHERE h.user_id = ?';
+$stmt = mysqli_prepare($con, $sql);
+mysqli_stmt_bind_param($stmt, 'si', $today_date, $user_id);
+mysqli_stmt_execute($stmt);
+$result = mysqli_stmt_get_result($stmt);
+
+if (mysqli_num_rows($result) === 0) {
+    echo 'No habits planned for today.';
+}
+
+echo '<ul class="todo-items">';
+while ($row = mysqli_fetch_assoc($result)) {
+    $checked = $row['status'] ? 'checked' : '';
+    echo '<li>';
+    echo '<input type="checkbox" class="habit-checkbox" data-habitid="'.$row['habit_id'].'" id="habit'.$row['habit_id'].'" '.$checked.'>';
+    echo '<label for="habit'.$row['habit_id'].'">'.htmlspecialchars($row['habit_name']).'</label>';
+    echo '</li>';
+}
+echo '</ul>';
+// todo: let user edit habit
+?>
         </div>
 
         <!-- Popup Form -->
@@ -55,7 +76,7 @@
                     <h3>Add A New Habit</h3>
                     <span class="close-btn" id="close-form">&times;</span>
                 </div>
-                <form>
+                <form action="addHabit.php" method="POST">
                     <label for="habit" class="field-label">Habit Name:</label>
                     <input type="text" id="habit" name="habit" required><br>
 
@@ -142,32 +163,51 @@
         };
         document.getElementById("today-date").textContent = today.toLocaleDateString(undefined, options);
     });
-    //pop up
+
     const openFormBtn = document.getElementById('open-form');
     const closeFormBtn = document.getElementById('close-form');
     const popupForm = document.getElementById('popup-form');
-    // open
+
     document.getElementById('open-form').addEventListener('click', () => {
         document.getElementById('popup-form').classList.add('is-open');
     });
-    // close (×)
+
     document.getElementById('close-form').addEventListener('click', () => {
         document.getElementById('popup-form').classList.remove('is-open');
     });
-    // Open popup
+
     openFormBtn.addEventListener('click', () => {
         popupForm.style.display = 'flex';
     });
-    // Close popup
+
     closeFormBtn.addEventListener('click', () => {
         popupForm.style.display = 'none';
     });
-    // Close when clicking outside the popup box
+
     window.addEventListener('click', (e) => {
         if (e.target === popupForm) {
             popupForm.style.display = 'none';
         }
     });
+
+
+    //ajax for logging habit
+document.querySelectorAll('.habit-checkbox').forEach(cb => {
+    cb.addEventListener('change', function() {
+        const habitId = this.dataset.habitid;
+        const checked = this.checked ? 1 : 0;
+
+        fetch('logHabit.php', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: `habit_id=${habitId}&checked=${checked}`
+        })
+        .then(res => res.text())
+        .then(data => console.log(data))
+        .catch(err => console.error(err));
+    });
+});
+
 </script>
 
 </html>
