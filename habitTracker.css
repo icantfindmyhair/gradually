@@ -95,6 +95,55 @@ a.title:active {
   text-align: left;
 }
 
+/* .todo-items input[type="checkbox"] {
+  margin-right: 10px;
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+
+  border-radius: 50%;
+  accent-color: #2B3C48;
+}
+
+.todo-items input[type="checkbox"]:checked + label {
+  text-decoration: line-through;
+  color: gray;
+}
+
+.todo-items input[type="checkbox"]:checked {
+  background-color: #2B3C48;
+} */
+
+.todo-items input[type="checkbox"] {
+  margin-right: 10px;
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+
+  -webkit-appearance: none; 
+  -moz-appearance: none;
+  appearance: none;
+
+  border: 2px solid #2B3C48;
+  border-radius: 50%;
+  display: inline-block;
+  position: relative;
+}
+
+.todo-items input[type="checkbox"]:checked::after {
+  content: "✔";
+  color: #2B3C48;
+  font-size: 14px;
+  position: absolute;
+  top: -2px;
+  left: 2px;
+}
+
+.todo-items input[type="checkbox"]:checked + label {
+  text-decoration: line-through;
+  color: gray;
+}
+
 .add-btn {
   width: 35px;
   height: 35px;
@@ -110,13 +159,6 @@ a.title:active {
 
 .add-btn:hover {
   background-color: #151E27;
-}
-
-.todo-items li {
-  list-style: none;
-  padding: 10px 5px;
-  border-bottom: 1px solid #ccc;
-  font-size: 16px;
 }
 
 /* ------------------------TO DO LIST ITSELF------------------------ */

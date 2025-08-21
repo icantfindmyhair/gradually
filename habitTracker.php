@@ -33,9 +33,18 @@
             </div>
 
             <ul class="todo-items">
-                <li>round check list / click to strike through when completed, maybe sound effect?</li>
-                <li>different font size for hobby name and description</li>
-                <li>example</li>
+                <li>
+                    <input type="checkbox" id="item1">
+                    <label for="item1">example1</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="item2">
+                    <label for="item2">example2</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="item3">
+                    <label for="item3">example3</label>
+                </li>
             </ul>
         </div>
 
@@ -58,49 +67,49 @@
                         <li>
                             <label class="repeat-row">
                                 <input type="checkbox" name="repeat[]" value="monday">
-                                <span class="repeat-text">Monday</span>
+                                <span class="repeat-text">Every Monday</span>
                                 <span class="repeat-tick" aria-hidden="true"></span>
                             </label>
                         </li>
                         <li>
                             <label class="repeat-row">
                                 <input type="checkbox" name="repeat[]" value="tuesday">
-                                <span class="repeat-text">Tuesday</span>
+                                <span class="repeat-text">Every Tuesday</span>
                                 <span class="repeat-tick" aria-hidden="true"></span>
                             </label>
                         </li>
                         <li>
                             <label class="repeat-row">
                                 <input type="checkbox" name="repeat[]" value="wednesday">
-                                <span class="repeat-text">Wednesday</span>
+                                <span class="repeat-text">Every Wednesday</span>
                                 <span class="repeat-tick" aria-hidden="true"></span>
                             </label>
                         </li>
                         <li>
                             <label class="repeat-row">
                                 <input type="checkbox" name="repeat[]" value="thursday">
-                                <span class="repeat-text">Thursday</span>
+                                <span class="repeat-text">Every Thursday</span>
                                 <span class="repeat-tick" aria-hidden="true"></span>
                             </label>
                         </li>
                         <li>
                             <label class="repeat-row">
                                 <input type="checkbox" name="repeat[]" value="friday">
-                                <span class="repeat-text">Friday</span>
+                                <span class="repeat-text">Every Friday</span>
                                 <span class="repeat-tick" aria-hidden="true"></span>
                             </label>
                         </li>
                         <li>
                             <label class="repeat-row">
                                 <input type="checkbox" name="repeat[]" value="saturday">
-                                <span class="repeat-text">Saturday</span>
+                                <span class="repeat-text">Every Saturday</span>
                                 <span class="repeat-tick" aria-hidden="true"></span>
                             </label>
                         </li>
                         <li>
                             <label class="repeat-row">
                                 <input type="checkbox" name="repeat[]" value="sunday">
-                                <span class="repeat-text">Sunday</span>
+                                <span class="repeat-text">Every Sunday</span>
                                 <span class="repeat-tick" aria-hidden="true"></span>
                             </label>
                         </li>
