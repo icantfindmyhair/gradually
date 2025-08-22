@@ -262,7 +262,7 @@ $userId = $_SESSION['user_id'];
                         else {
                             while($row = mysqli_fetch_assoc($result4)) {
                         ?>
-                        <a href="moneyTransUpdate.php?trans_id=<?php echo $row["trans_id"];?>editing=1">
+                        <a href="moneyTrans.php?trans_id=<?php echo $row["trans_id"];?>">
                             <div class="wraphistory coiny-regular" oncontextmenu="if(confirm('Delete this transaction?')) {window.location.href='moneyTransDelete.php?trans_id=<?php echo $row['trans_id']; ?>'; } return false;">
                                 <div class="date"><?php echo $row['day'] ?></div>
                                 <div class="wrapName">
