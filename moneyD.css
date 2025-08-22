@@ -1,6 +1,6 @@
 body {
     display: flex;
-    background-color: #D4DEDDff;
+    background-color: #D4DEDDff !important;
     flex-direction: column;
     height: 100vh;
     margin: 0;
@@ -229,6 +229,14 @@ body {
   scrollbar-width: thin;
   scrollbar-color: #888 #ccc;
 }
+
+.transhistory a{
+  text-decoration: none;
+}
+.transhistory a:hover{
+  text-decoration: none;
+}
+
 .commonLabel{
   display: flex;
   width: 529px;
@@ -281,7 +289,7 @@ body {
   top: 100%;
 
   display: flex; justify-content: flex-end; gap: 8px;
-
+  z-index: 10;
   opacity: 0; 
   pointer-events: none;
   transform: translateY(-6px);
@@ -298,8 +306,7 @@ body {
   border-radius: 6px;
   background-color: #D4DEDD;
   font-size: 16px;
-  cursor: pointer;
-  z-index:1;
+  z-index:10;
 }
 
 .modbox:hover{

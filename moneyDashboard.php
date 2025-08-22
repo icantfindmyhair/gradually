@@ -104,7 +104,7 @@ $userId = $_SESSION['user_id'];
                             die(mysqli_error($con));
                         }
                         if(mysqli_num_rows($result1) === 0 ) {
-                            echo '<div> No data. </div>';
+                            echo '<script> alert("Remember to create transaction for your expenses!"); </script>';
                         } else {
                             while($row = mysqli_fetch_assoc($result1)) {
                                 $totalIncome = (float)($row['total'] ?? 0);
@@ -123,9 +123,7 @@ $userId = $_SESSION['user_id'];
                         if(!$result2) {
                             die(mysqli_error($con));
                         }
-                        if(mysqli_num_rows($result2) === 0 ) {
-                            echo '<div> No data. </div>';
-                        } else {
+                        else {
                             while($row = mysqli_fetch_assoc($result2)) {
                                 $totalExpenses = (float)($row['total'] ?? 0);
                             }
@@ -183,9 +181,7 @@ $userId = $_SESSION['user_id'];
                                 if(!$result2) {
                                     die(mysqli_error($con));
                                 }
-                                if(mysqli_num_rows($result2)=== 0 ) {
-                                    echo '<div> No data. </div>';
-                                } else {
+                                else {
                                     while($row = mysqli_fetch_assoc($result2)) {
                                         $labels[] = $row['category'];
                                         $values[] = (float)$row['total'];//Correct
@@ -224,7 +220,7 @@ $userId = $_SESSION['user_id'];
                                     die(mysqli_error($con));
                                 }
                                 if(mysqli_num_rows($result3) === 0 ) {
-                                    echo '<div> No data. </div>';
+                                    echo '<script> alert("Remember to create transaction for your expenses!"); </script>';
                                 } else {
                                     while($row = mysqli_fetch_assoc($result3)) {
                                 ?>
@@ -248,10 +244,10 @@ $userId = $_SESSION['user_id'];
                         <label id="datelabel" class="coiny-regular">Date</label>
                         <label id="rm" class="coiny-regular">RM</label>
                     </div>
-                    <div class="transhistory">
+                    <div class="transhistory coiny-regular">
                         <?php
-                        //3. Query all transaction made
-                        $queryEachTran = "SELECT amount, type, category, account_type, type, DAY(`date`) AS day, description
+                        //4. Query all transaction made
+                        $queryEachTran = "SELECT trans_id, amount, type, category, account_type, type, DAY(`date`) AS day, description
                                         FROM  transaction
                                         WHERE MONTH(`date`) = $month
                                         AND YEAR(`date`) = $year
@@ -263,27 +259,18 @@ $userId = $_SESSION['user_id'];
                         if(!$result4) {
                             die(mysqli_error($con));
                         }
-                        if(mysqli_num_rows($result4) === 0 ) {
-                            echo '<div> No data. </div>';
-                        } else {
+                        else {
                             while($row = mysqli_fetch_assoc($result4)) {
                         ?>
-                        <div class="forUpdateDeleteBtn">
-                            <div class="wraphistory coiny-regular">
+                        <a href="moneyTransUpdate.php?trans_id=<?php echo $row["trans_id"];?>editing=1">
+                            <div class="wraphistory coiny-regular" oncontextmenu="if(confirm('Delete this transaction?')) {window.location.href='moneyTransDelete.php?trans_id=<?php echo $row['trans_id']; ?>'; } return false;">
                                 <div class="date"><?php echo $row['day'] ?></div>
                                 <div class="wrapName">
                                     <div class="name"><?php echo $row['description'] ?></div>
                                     <div class="cat" style="font-size: 20px;"><?php echo $row['category'] ?></div>
                                 </div>   
                                 <div class="amount" style="color: <?php echo ($row['type'] === 'income') ? '#A7F6D1' : '#F6A7A7'; ?>"><?php echo number_format((float)$row['amount']) ?></div>
-                            </div>
-                          
-                            <!--Allow user to modify transaction-->
-                            <div class="modification coiny-regular">
-                                <button class="updateBtn modbox">Update<span class="material-symbols-outlined">update</span></button>
-                                <button class="deleteBtn modbox">Delete<span class="material-symbols-outlined">delete</span></button>
-                            </div>
-                        </div>
+                            </div></a>
                         <?php }} ?>   
                     </div>
                 </section>            
