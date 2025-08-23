@@ -15,7 +15,7 @@ if(isset($_POST['new_trans']) && $_POST['new_trans'] == 1){
     $account_type = $_REQUEST['account_type'];
     $desc = $_REQUEST['desc'] ?? '';
     $type = $_REQUEST['type_handler'];
-    $userId = $_SESSION['user_id'] ?? '1';
+    $userId = $_SESSION['user_id'];
 
     $ins_query = "INSERT into transaction(`amount`,`type`,`category`,`account_type`,`date`,`description`,`user_id`)
                 VALUES('$amount','$type','$category','$account_type','$date','$desc','$userId')";
@@ -118,7 +118,7 @@ if(isset($_POST['new_trans']) && $_POST['new_trans'] == 1){
                             </tr>
                             <tr>
                                 <td></td>
-                                <td><input type="submit" class="coiny-regular" value="Submit" onclick="confirmMsg()"></td>
+                                <td><input type="submit" class="coiny-regular" value="Submit"></td>
                             </tr>                                                            
                             </form>
                         </table>            
@@ -142,10 +142,6 @@ if(isset($_POST['new_trans']) && $_POST['new_trans'] == 1){
             btn.classList.add('active');
             document.getElementById('type_handler').value = btn.dataset.value; // "expense" or "income"
             });
-            
-            function confirmMsg() {
-                alert($status);
-            }
         </script>
     </body>
 </html>

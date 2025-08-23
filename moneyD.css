@@ -230,13 +230,6 @@ body {
   scrollbar-color: #888 #ccc;
 }
 
-.transhistory a{
-  text-decoration: none;
-}
-.transhistory a:hover{
-  text-decoration: none;
-}
-
 .commonLabel{
   display: flex;
   width: 529px;
@@ -316,4 +309,87 @@ body {
   opacity: 1;                       
   pointer-events: auto;
   transform: translateY(0);
+}
+
+/* Update css */
+.popup {
+  width:600px;
+  background: #D4DEDDff;
+  border-radius: 6px;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.1);
+  padding: 15px;
+  font-size: 24px;
+  border-style: ridge;
+  visibility: hidden;
+  transition: transform 0.4s, top 0.4s;
+  display: grid;
+  justify-content: center;
+}
+.open-popup{
+  visibility: visible;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+table label{
+  display: block;
+  margin-right: 50px;
+  margin-bottom: 6px;
+  font-weight: bold;
+  font-size: 32px;
+}
+
+table input[type="text"],
+table input[type="date"],
+table input[type="number"]
+{
+    background: transparent;
+    width: 300px;
+    padding: 10px;
+    border: none;
+    border-bottom: 1px solid #2c3e50;
+    margin-bottom: 12px;
+}
+
+table #account_type{
+    background: transparent;
+    width: 300px;
+    padding: 10px;
+    border: none;
+    border-bottom: 1px solid #2c3e50;
+    margin-bottom: 12px;
+}
+
+table textarea {
+    background: rgba(170, 170, 170, 0.29);
+    width: 300px;
+    padding: 10px;
+    border: none;
+    margin-bottom: 12px;
+}
+
+table input[type="submit"] {
+    box-shadow:1px 1px grey;
+    background-color: #fff;
+    color: black;
+    font-size: 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 75px;
+    height:32px;
+}
+.tableWrap{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.tableWrap p{
+  font-size: 40px;
+}
+.tableWrap button{
+  text-align: right;
+  margin-bottom: 16px;
 }

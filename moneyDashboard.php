@@ -22,6 +22,13 @@ $monthName = date("F", mktime(0,0,0,$month,1,$year));
 $userId = $_SESSION['user_id'];
 
 ?>
+<?php if (isset($_GET['trans_id']) && ctype_digit($_GET['trans_id'])): ?>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('popup').classList.add('open-popup');
+  });
+</script>
+<?php endif; ?>
 <!DOCTYPE html>
 <html>
     <head>
@@ -262,16 +269,85 @@ $userId = $_SESSION['user_id'];
                         else {
                             while($row = mysqli_fetch_assoc($result4)) {
                         ?>
-                        <a href="moneyTrans.php?trans_id=<?php echo $row["trans_id"];?>">
-                            <div class="wraphistory coiny-regular" oncontextmenu="if(confirm('Delete this transaction?')) {window.location.href='moneyTransDelete.php?trans_id=<?php echo $row['trans_id']; ?>'; } return false;">
-                                <div class="date"><?php echo $row['day'] ?></div>
-                                <div class="wrapName">
-                                    <div class="name"><?php echo $row['description'] ?></div>
-                                    <div class="cat" style="font-size: 20px;"><?php echo $row['category'] ?></div>
-                                </div>   
-                                <div class="amount" style="color: <?php echo ($row['type'] === 'income') ? '#A7F6D1' : '#F6A7A7'; ?>"><?php echo number_format((float)$row['amount']) ?></div>
-                            </div></a>
-                        <?php }} ?>   
+                        <div class="wraphistory coiny-regular" onclick="openPopup(<?php echo $row['trans_id']; ?>)" oncontextmenu="if(confirm('Delete this transaction?')) {window.location.href='moneyTransDelete.php?trans_id=<?php echo $row['trans_id']; ?>'; } return false;">
+                            <div class="date"><?php echo $row['day'] ?></div>
+                            <div class="wrapName">
+                                <div class="name"><?php echo $row['description'] ?></div>
+                                <div class="cat" style="font-size: 20px;"><?php echo $row['category'] ?></div>
+                            </div>   
+                            <div class="amount" style="color: <?php echo ($row['type'] === 'income') ? '#A7F6D1' : '#F6A7A7'; ?>"><?php echo number_format((float)$row['amount']) ?></div>
+                        </div>
+                        <?php }} ?>
+                        <div class="popup" id="popup">
+                            <?php
+                                $trans_id=$_GET['trans_id'];
+                                $userId = $_SESSION['user_id'];
+                                $query = "SELECT * FROM transaction where trans_id='".$trans_id."'";
+                                $result = mysqli_query($con, $query) or die ( mysqli_error($con));
+                                $row = mysqli_fetch_assoc($result);
+                                $status = "";
+
+                                if(isset($_POST['new']) && $_POST['new']==1)
+                                {
+                                    $date = $_REQUEST['date'];
+                                    $date = date("Y-m-d", strtotime($date));
+                                    $category = $_REQUEST['category'];
+                                    $amount = $_REQUEST['amount'];
+                                    $account_type = $_REQUEST['account_type'];
+                                    $desc = $_REQUEST['desc'] ?? '';
+                                    $type = $row['type'];
+
+                                    $update="UPDATE transaction set date='".$date."',
+                                            category='".$category."', amount='".$amount."', account_type='".$account_type."',
+                                            description='".$desc."', type='".$type."' where trans_id='".$trans_id."' and user_id='".$userId."'";
+                                    mysqli_query($con, $update) or die(mysqli_error($con));
+
+                                    $status = "Transaction Record Updated Successfully.";
+                                    echo "<script>
+                                            alert('$status');
+                                            window.location.href = 'moneyDashboard.php';
+                                        </script>";
+                                } else {
+                                ?>
+                                <table>
+                                    <form action="" method="post">
+                                    <input name="user_id" type="hidden" value="<?php echo $userId;?>" />
+                                    <div class="tableWrap">
+                                        <input type="hidden" name="new" value="1"/><p>Edit for transaction <span class="material-symbols-outlined">edit</span></p>
+                                        <button type="button" class="close" onclick="window.location.href='moneyDashboard.php'"><span class="material-symbols-outlined">close</span></button>
+                                    </div>
+                                    <tr>
+                                        <td><label class="coiny-regular" for="date">Date</label></td>
+                                        <td><input id="date" name="date" type="date" placeholder="<?php echo $row['date'];?>" value="<?php echo $row['date'];?>" required></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label class="coiny-regular" for="category">Category</label></td>
+                                        <td><input id="category" name="category" type="text" placeholder="<?php echo $row['category'];?>" value="<?php echo $row['category'];?>" required></td>
+                                    </tr>                    
+                                    <tr>
+                                        <td><label class="coiny-regular" for="amount">Amount</label></td>
+                                        <td><input id="amount" name="amount" type="number" step="0.01" min="0"  placeholder="<?php echo $row['amount'];?>" value="<?php echo $row['amount'];?>" required></td>
+                                    </tr> 
+                                    <tr>
+                                        <td><label class="coiny-regular" for="account_type">Account</label></td>
+                                        <td><select name="account_type" name="account_type" id="account_type">
+                                            <option value="Cash">Cash</option>
+                                            <option value="E-wallet">E-wallet</option>
+                                            <option value="Card">Card</option>
+                                            <option value="BankAccount">Back Account</option>
+                                        </select></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="vertical-align: top; padding-top: 6px;"><label class="coiny-regular" for="Desc">Description</label></td>
+                                        <td><textarea id="desc" class="form-control" id="desc" name="desc" rows="4"><?php echo $row['description'];?></textarea></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" style="text-align:center;"><input type="submit" class="coiny-regular" value="Update" onclick="closePopup()"></td>
+                                    </tr>                                                            
+                                    </form>
+                                </table>
+                            <?php } ?>
+                        </div>   
                     </div>
                 </section>            
             </div>
@@ -347,6 +423,14 @@ $userId = $_SESSION['user_id'];
             btn.classList.add('active');
         });
 
+    let popup = document.getElementById("popup");
+    function openPopup(trans_id){
+        window.location.href = 'moneyDashboard.php?trans_id=' + trans_id;
+        popup.classList.add("open-popup");
+    }
+    function closePopup(){
+        popup.classList.remove("open-popup");
+    }
     </script>
     </body>
 </html>
