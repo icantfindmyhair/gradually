@@ -79,10 +79,10 @@ if (isset($_GET['trans_id']) && ctype_digit($_GET['trans_id'])): ?>
                 <a href="?month=<?= $month+1 ?>&year=<?= $year ?>"><button class="material-symbols-outlined">arrow_forward_ios</button></a>
             </div>
             <div id="selectionButtons" class= "tabs-bar">
-                <button class="tab selectionButton coiny-regular">Daily</button>
-                <button class="tab selectionButton coiny-regular">Weekly</button>
-                <button class="tab selectionButton active coiny-regular">Monthly</button>
-                <button class="tab selectionButton coiny-regular">Yearly</button>
+                <button class="tab selectionButton coiny-regular" data-value="daily">Daily</button>
+                <button class="tab selectionButton coiny-regular" data-value="weekly">Weekly</button>
+                <button class="tab selectionButton active coiny-regular" data-value="monthly">Monthly</button>
+                <button class="tab selectionButton coiny-regular" data-value="yearly">Yearly</button>
             </div>
         </div>
         <!-- End of Top selection-->

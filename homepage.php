@@ -60,8 +60,8 @@ updateClock();
 
 
     <!-- Welcome message -->
-    <?php if (isset($_COOKIE['user'])) {
-        $cookie_value = $_COOKIE['user'];
+    <?php if (isset($_SESSION['username'])) {
+        $cookie_value = $_SESSION['username'];
         echo '<h3 style="text-align:center;color:#2B3C48ff;font-family:Zen Maru Gothic">Welcome, '.$cookie_value.'. Let us improve gradually, every day.</h3>';
     } else {
         echo '<p style="text-align:center;color:#2B3C48ff;font-family:Zen Maru Gothic">Welcome, user. Let us improve gradually, every day.</p>';

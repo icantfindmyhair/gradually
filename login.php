@@ -106,7 +106,7 @@ if (isset($_POST['username'])) {
     </div>
 
     <?php 
-    if ((isset($_GET['token'])) && $_POST['renewPwd'] == 1) {
+    if ((isset($_GET['token'])) && isset($_POST['renewPwd']) && $_POST['renewPwd'] == 1) {
     $token = mysqli_real_escape_string($con, $_GET['token']);
 
     // Verify token
