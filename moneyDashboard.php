@@ -21,8 +21,7 @@ $monthName = date("F", mktime(0,0,0,$month,1,$year));
 //Get user id#
 $userId = $_SESSION['user_id'];
 
-?>
-<?php if (isset($_GET['trans_id']) && ctype_digit($_GET['trans_id'])): ?>
+if (isset($_GET['trans_id']) && ctype_digit($_GET['trans_id'])): ?>
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('popup').classList.add('open-popup');
