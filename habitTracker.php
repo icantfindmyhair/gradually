@@ -218,9 +218,7 @@ document.getElementById('open-form').addEventListener('click', () => {
       if (d.style.display === 'block') d.style.display = '';
     });
   }
-
-  console.log('kebab dropdown script initializing');
-
+  
   document.addEventListener('click', (e) => {
     try {
       const menuBtn = e.target.closest('.menu-btn');
@@ -285,8 +283,6 @@ document.getElementById('open-form').addEventListener('click', () => {
   });
 
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAll(); });
-
-  console.log('kebab dropdown script loaded');
 })();
 
     //ajax for logging habit
