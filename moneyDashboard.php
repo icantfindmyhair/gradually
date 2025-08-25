@@ -17,17 +17,18 @@ $date = isset($_GET['date']) ? intval($_GET['date']) : date("d");
 $month = isset($_GET['month']) ? intval($_GET['month']) : date("n"); // 1–12
 $year  = isset($_GET['year']) ? intval($_GET['year']) : date("Y");
 
+//Convert to word
+$monthNames = [
+    1=>'January',2=>'February',3=>'March',4=>'April',5=>'May',6=>'June',
+    7=>'July',8=>'August',9=>'September',10=>'October',11=>'November',12=>'December'
+];
+
 //Handle view type
 switch($view){
 
     case 'daily':
         $startDate = $year."-".$month."-".$date; //today's date
         $endDate = $year."-".$month."-".$date;
-        break;
-
-    case 'weekly':
-        $startDate = $year."-".$month."-".($date-6); // today's date - 6 => last week
-        $endDate = $year."-".$month."-".$date; //today's date
         break;
 
     case 'monthly':
@@ -45,10 +46,51 @@ switch($view){
         $endDate = $year."-".$month."-".date("t");
 }
 
+//Month that has 30 or 31
+$monthin31 = [1,3,5,7,8,10,12];
+
+$monthin30 = [4,6,9,11];
+
+//Check leap year
+function isLeapYear($year) {
+    return ($year % 4 == 0);
+}
+
+//Condition for datetime
 if ($month < 1) { $month = 12; $year--; }
 if ($month > 12) { $month = 1; $year++; }
-//Convert to word
-$monthName = date("F", mktime(0,0,0,$month,1,$year));
+if ($date < 1) {
+    $month--;
+    if($month < 1) { $month = 12; $year--; }
+    if(in_array($month, $monthin31)) {
+        $date = 31;
+    } elseif(in_array($month, $monthin30)) {
+        $date = 30; 
+    } elseif ($month == 2){
+        $date = isLeapYear($year) ? 29 : 28;
+    }
+}
+
+if (in_array($month, $monthin31) && $date > 31) {
+    $date = 1;
+    $month++;
+
+} elseif (in_array($month, $monthin30) && $date > 30) {
+    $date = 1;
+    $month++;
+
+} else if ($month == 2 ) {
+
+    if($date > 29 && isLeapYear($year)) {//leap year
+        $date = 1;
+        $month++;
+    } elseif(!isLeapYear($year) && $date > 28) {
+        $date = 1;
+        $month++;
+    }
+}
+
+$monthName = $monthNames[$month];
 
 //Get user id#
 $userId = $_SESSION['user_id'];
@@ -109,46 +151,37 @@ if (isset($_GET['trans_id']) && ctype_digit($_GET['trans_id'])): ?>
                 <?php
                 if($view == 'monthly') :?>
 
-                    <a href="?view=monthly&month=<?= $month-1 ?>&year=<?= $year ?>"><button class="material-symbols-outlined">arrow_back_ios</button></a>
+                    <a href="?view=monthly&month=<?= $month-1 ?>&year=<?= $year ?>"><button class="arrow material-symbols-outlined">arrow_back_ios</button></a>
                     <div class="Month coiny-regular">
                         <?php 
                             echo $monthName. " ". $year;
                         ?>
                     </div>
-                    <a href="?view=monthly&month=<?= $month+1 ?>&year=<?= $year ?>"><button class="material-symbols-outlined">arrow_forward_ios</button></a>
+                    <a href="?view=monthly&month=<?= $month+1 ?>&year=<?= $year ?>"><button class="arrow material-symbols-outlined">arrow_forward_ios</button></a>
 
                 <?php elseif($view == 'daily') :?>
-                    <a href="?view=daily&date=<?= $date-1 ?>&month=<?= $month ?>&year=<?= $year ?>"><button class="material-symbols-outlined">arrow_back_ios</button></a>
+                    <a href="?view=daily&date=<?= $date-1 ?>&month=<?= $month ?>&year=<?= $year ?>"><button class="arrow material-symbols-outlined">arrow_back_ios</button></a>
                     <div class="Month coiny-regular">
                         <?php 
                             echo $date. " ". $monthName. " ". $year;
                         ?>
                     </div>
-                    <a href="?view=daily&date=<?= $date+1 ?>&month=<?= $month ?>&year=<?= $year ?>"><button class="material-symbols-outlined">arrow_forward_ios</button></a>
+                    <a href="?view=daily&date=<?= $date+1 ?>&month=<?= $month ?>&year=<?= $year ?>"><button class="arrow material-symbols-outlined">arrow_forward_ios</button></a>
 
-                <?php elseif($view == 'weekly') :?>
-                    <a href="?view=weekly&date=<?= $date-6 ?>&month=<?= $month ?>&year=<?= $year ?>"><button class="material-symbols-outlined">arrow_back_ios</button></a>
-                    <div class="Month coiny-regular">
-                        <?php 
-                            echo ($date-6). " - ". $date." ". $monthName. " ". $year;
-                        ?>
-                    </div>
-                    <a href="?view=weekly&date=<?= $date+6 ?>&month=<?= $month ?>&year=<?= $year ?>"><button class="material-symbols-outlined">arrow_forward_ios</button></a>
-                
                 <?php else :?>
-                    <a href="?view=yearly&year=<?= $year-1 ?>"><button class="material-symbols-outlined">arrow_back_ios</button></a>
+                    <a href="?view=yearly&year=<?= $year-1 ?>"><button class="arrow material-symbols-outlined">arrow_back_ios</button></a>
                     <div class="Month coiny-regular">
                         <?php 
                             echo $year; 
                         ?>
                     </div>
-                    <a href="?view=yearly&year=<?= $year+1 ?>"><button class="material-symbols-outlined">arrow_forward_ios</button></a>
+                    <a href="?view=yearly&year=<?= $year+1 ?>"><button class="arrow material-symbols-outlined">arrow_forward_ios</button></a>
                 <?php endif;?>
 
             </div>
             <div id="selectionButtons" class= "tabs-bar">
                 <?php
-                $views = ['daily' => 'Daily', 'weekly' => 'Weekly', 'monthly' => 'Monthly', 'yearly' => 'Yearly'];
+                $views = ['daily' => 'Daily', 'monthly' => 'Monthly', 'yearly' => 'Yearly'];
                 foreach ($views as $key => $label) {
                     $activeClass = ($view == $key) ? 'active' : '';
                     echo '<button class="tab selectionButton ' . $activeClass . ' coiny-regular">
@@ -308,6 +341,9 @@ if (isset($_GET['trans_id']) && ctype_digit($_GET['trans_id'])): ?>
                                 <?php }} ?>       
                             </div>
                         </div>
+                        <div class="linkLineChart">
+                            <a href="moneyLineChart.php"><button class="LineChartButton coiny-regular">Switch View</button></a>
+                        </div>
                     </div>
                 </section>            
             </div>
@@ -343,7 +379,7 @@ if (isset($_GET['trans_id']) && ctype_digit($_GET['trans_id'])): ?>
                                 <div class="name"><?php echo $row['description'] ?></div>
                                 <div class="cat" style="font-size: 20px;"><?php echo $row['category'] ?></div>
                             </div>   
-                            <div class="amount" style="color: <?php echo ($row['type'] === 'income') ? '#A7F6D1' : '#F6A7A7'; ?>"><?php echo number_format((float)$row['amount']) ?></div>
+                            <div class="amount" style="color: <?php echo ($row['type'] === 'income') ? '#A7F6D1' : '#F6A7A7'; ?>"><?php echo number_format((float)$row['amount'],2) ?></div>
                         </div>
                         <?php }} ?>
                         <div class="popup" id="popup">
@@ -428,9 +464,6 @@ if (isset($_GET['trans_id']) && ctype_digit($_GET['trans_id'])): ?>
     //Convert PHP to JavScript, https://www.w3schools.com/php/func_json_encode.asp
     let lbs = <?php echo json_encode($labels) ?>;
     let vals = <?php echo json_encode($values) ?>;
-
-    //Convert to float data type
-    //vals = vals.map(v => parseFloat(v));
 
     //Start of money pie chart
     const colorPalette = ['#D5DFE5','#7F9172','#567568','#B49594','#C9B1BD'];

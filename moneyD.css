@@ -41,6 +41,12 @@ body {
   display: flex;
   text-decoration: none;
 }
+
+.month-bar a:hover{
+  color:black;
+  text-decoration: none;
+}
+
 .month-bar a button{
   border: none;
   background-color: transparent;
@@ -137,14 +143,24 @@ body {
   align-items: center;
 }
 
+.linkLineChart{
+  width: 650px;
+  height: 100px;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .calcContent{
   width: 655px;
-  height: 683px; 
+  height: 683px;
+  display: grid;
+  justify-items: center; 
 }
 
 .calcIncomeExpenses{
   width:655px;
-  height:300px;
+  height:290px;
   overflow-y:auto;
   overflow-x:hidden;
   scrollbar-width: thin;
@@ -152,8 +168,10 @@ body {
 }
 
 .rmLabel{
-  text-align: right;
+  width: 655px;
+  height: 70px;
   padding: 10px 30px;
+  text-align: right;
 }
 .rmLabel label{
   font-size: 28px;
@@ -183,7 +201,7 @@ body {
 }
 .calcType{
   width: 655px;
-  height: 327px;
+  height: 223px;
 }
 
 .labelAccount{
@@ -192,7 +210,7 @@ body {
   padding:5px 30px;
 }
 
-.transactionButton{
+.transactionButton, .LineChartButton{
   border:none;
   width:250px;
   height:50px;
@@ -202,7 +220,7 @@ body {
   color: white;
 }
 
-.transactionButton:hover{
+.transactionButton:hover, .LineChartButton:hover{
   background-color: #777e7e;
 }
 

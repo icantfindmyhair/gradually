@@ -1,0 +1,104 @@
+body {
+    display: flex;
+    background-color: #D4DEDDff !important;
+    flex-direction: column;
+    height: 100vh;
+    margin: 0;
+}
+
+/* Font */
+.coiny-regular {
+  font-family: "Coiny", system-ui;
+  font-weight: 400;
+  font-style: normal;
+}
+
+/*Icon styling*/
+.material-symbols-outlined {
+  font-variation-settings:
+  'FILL' 0,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 15
+}
+
+.top-selection{
+  display:flex;
+  justify-content: space-between;
+  align-items: center;
+}
+/* selection */
+.month-bar {
+  display: flex;
+  justify-content: left;
+  gap: 24px;
+  margin-left: 200px;
+}
+.Month{
+  font-size: 60px;
+}
+
+.month-bar a{
+  display: flex;
+  text-decoration: none;
+}
+.month-bar a button{
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+/* tabs css */
+.tabs-bar {
+  display: flex;
+  margin-right: 100px;
+}
+
+.tabs-bar .tab{
+  border: 1px outset;
+  width: 162px;
+  height:45px;
+  background-color: white;
+  text-align: center;
+  font-size: 28px;
+  box-shadow: inset 0 0 2px rgba(0,0,0,0.25);
+}
+
+.tabs-bar .tab.active{
+  background-color: rgba(170, 170, 170, 0.6667);
+}
+
+.tabs-bar .tab a{
+  text-decoration: none;
+  color: black;
+}
+
+.moneyLineChart{
+  width: 1800px;
+  height: 650px;
+  display: flex;
+  justify-content: center;
+}
+
+.linkLineChart{
+  width: 1800px;
+  height: 100px;
+  display:grid;
+  justify-content: center;
+  align-items: center;
+}
+
+.LineChartButton{
+  border:none;
+  width:250px;
+  height:50px;
+  background-color: #777e7e;
+  box-shadow: 3px 3px 6px rgba(0,0,0,0.25);
+  font-size:24px;
+  color: white;
+}
+
+.LineChartButton:hover{
+  background-color: #D9D9D9;
+  color: black;
+}
