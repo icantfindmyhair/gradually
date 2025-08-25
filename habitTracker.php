@@ -59,9 +59,20 @@ if (mysqli_num_rows($result) === 0) {
 echo '<ul class="todo-items">';
 while ($row = mysqli_fetch_assoc($result)) {
     $checked = $row['status'] ? 'checked' : '';
-    echo '<li>';
+    $completedClass = $row['status'] ? ' class="completed"' : '';
+    echo '<li'.$completedClass.'>';
+    echo '<div class="habit-left">';
     echo '<input type="checkbox" class="habit-checkbox" data-habitid="'.$row['habit_id'].'" id="habit'.$row['habit_id'].'" '.$checked.'>';
     echo '<label for="habit'.$row['habit_id'].'">'.htmlspecialchars($row['habit_name']).'</label>';
+    echo '</div>';
+
+    echo '<div class="habit-menu">';
+    echo '<button class="menu-btn">⋮</button>';
+    echo '<div class="menu-dropdown">';
+    echo '<button class="edit-btn" data-habitid="'.$row['habit_id'].'">Edit</button>';
+    echo '<button class="delete-btn" data-habitid="'.$row['habit_id'].'">Delete</button>';
+    echo '</div>';
+    echo '</div>';
     echo '</li>';
 }
 echo '</ul>';
@@ -190,6 +201,83 @@ echo '</ul>';
         }
     });
 
+(function(){
+  function closeAll() {
+    document.querySelectorAll('.menu-dropdown.show').forEach(d => {
+      d.classList.remove('show');
+      if (d.style.display === 'block') d.style.display = '';
+    });
+  }
+
+  console.log('kebab dropdown script initializing');
+
+  document.addEventListener('click', (e) => {
+    try {
+      const menuBtn = e.target.closest('.menu-btn');
+      if (menuBtn) {
+        e.stopPropagation();
+        const menu = menuBtn.closest('.habit-menu');
+        if (!menu) { console.warn('menu button has no .habit-menu parent'); return; }
+        const dd = menu.querySelector('.menu-dropdown');
+        if (!dd) { console.warn('no .menu-dropdown found inside .habit-menu'); return; }
+
+        document.querySelectorAll('.menu-dropdown.show').forEach(d => { if (d !== dd) d.classList.remove('show'); });
+
+        dd.classList.toggle('show');
+
+        const comp = window.getComputedStyle(dd).display;
+        if (comp === 'none') {
+          dd.style.display = dd.style.display === 'block' ? '' : 'block';
+        } else {
+          if (!dd.classList.contains('show')) dd.style.display = '';
+        }
+
+        return;
+      }
+
+      const editBtn = e.target.closest('.edit-btn');
+      if (editBtn) {
+        e.stopPropagation();
+        const habitId = editBtn.dataset.habitid;
+        console.log('Edit clicked ->', habitId);
+        if (typeof openEditPopup === 'function') {
+          openEditPopup(habitId);
+        } else {
+          console.warn('openEditPopup(habitId) not found — implement to open your popup.');
+        }
+        closeAll();
+        return;
+      }
+
+      const deleteBtn = e.target.closest('.delete-btn');
+      if (deleteBtn) {
+        e.stopPropagation();
+        const habitId = deleteBtn.dataset.habitid;
+        console.log('Delete clicked ->', habitId);
+        if (confirm('Delete this habit?')) {
+          fetch('deleteHabit.php', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: 'habit_id=' + encodeURIComponent(habitId)
+          }).then(r => r.text()).then(t => {
+            console.log('delete response:', t);
+            location.reload();
+          }).catch(err => console.error('delete error', err));
+        }
+        closeAll();
+        return;
+      }
+
+      closeAll();
+    } catch (err) {
+      console.error('kebab handler error', err);
+    }
+  });
+
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAll(); });
+
+  console.log('kebab dropdown script loaded');
+})();
 
     //ajax for logging habit
 document.querySelectorAll('.habit-checkbox').forEach(cb => {
