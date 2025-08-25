@@ -86,18 +86,20 @@ echo '</ul>';
                 <div class="popup-header">
                     <h3>Add A New Habit</h3>
                     <span class="close-btn" id="close-form">&times;</span>
-                </div>
-                <form action="addHabit.php" method="POST">
-                    <label for="habit" class="field-label">Habit Name:</label>
-                    <input type="text" id="habit" name="habit" required><br>
+                   </div>
+                   <form action="addHabit.php" method="POST" id="habit-form">
+                       <input type="hidden" id="habit_id" name="habit_id">
 
-                    <label for="remarks" class="field-label">Remarks:</label>
-                    <input type="text" id="remarks" name="remarks"><br>
+                       <label for="habit" class="field-label">Habit Name:</label>
+                       <input type="text" id="habit" name="habit" required><br>
 
-                    <label class="field-label">Repeat:</label>
-                    <ul class="repeat-list">
-                        <li>
-                            <label class="repeat-row">
+                       <label for="remarks" class="field-label">Remarks:</label>
+                       <input type="text" id="remarks" name="remarks"><br>
+
+                       <label class="field-label">Repeat:</label>
+                       <ul class="repeat-list">
+                           <li>
+                               <label class="repeat-row">
                                 <input type="checkbox" name="repeat[]" value="monday">
                                 <span class="repeat-text">Every Monday</span>
                                 <span class="repeat-tick" aria-hidden="true"></span>
@@ -179,9 +181,17 @@ echo '</ul>';
     const closeFormBtn = document.getElementById('close-form');
     const popupForm = document.getElementById('popup-form');
 
-    document.getElementById('open-form').addEventListener('click', () => {
-        document.getElementById('popup-form').classList.add('is-open');
-    });
+    // document.getElementById('open-form').addEventListener('click', () => {
+    //     document.getElementById('popup-form').classList.add('is-open');
+    // });
+    // Add button already has this:
+// Add button (only one in page)
+document.getElementById('open-form').addEventListener('click', () => {
+    habitForm.reset();
+    habitIdField.value = "";
+    submitBtn.textContent = "Add";
+    popupForm.style.display = 'flex';
+});
 
     document.getElementById('close-form').addEventListener('click', () => {
         document.getElementById('popup-form').classList.remove('is-open');
@@ -295,6 +305,55 @@ document.querySelectorAll('.habit-checkbox').forEach(cb => {
         .catch(err => console.error(err));
     });
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+    const habitForm = document.getElementById('habit-form');
+    const habitIdField = document.getElementById('habit_id');
+    const habitNameField = document.getElementById('habit'); 
+    const remarksField = document.getElementById('remarks');
+    const submitBtn = habitForm.querySelector('button[type="submit"]');
+    const popupForm = document.getElementById('popup-form');
+
+    document.getElementById('open-form').addEventListener('click', () => {
+        habitForm.reset();
+        habitIdField.value = ""; 
+        submitBtn.textContent = "Add";
+        popupForm.style.display = 'flex';
+    });
+
+    document.getElementById('close-form').addEventListener('click', () => {
+        popupForm.style.display = 'none';
+    });
+
+    document.querySelectorAll('.edit-btn').forEach(editBtn => {
+    editBtn.addEventListener('click', () => {
+        const habitId = editBtn.dataset.habitid;
+        console.log("Edit clicked ->", habitId);
+
+        fetch(`getHabit.php?habit_id=${habitId}`)
+            .then(res => res.json())
+            .then(data => {
+                console.log("Habit data:", data);
+
+                habitIdField.value = data.habit_id;
+                habitNameField.value = data.habit_name;
+                remarksField.value = data.description || "";
+
+                habitForm.querySelectorAll('input[name="repeat[]"]').forEach(cb => {
+                    cb.checked = data.repeat_days.includes(cb.value);
+                });
+
+                submitBtn.textContent = "Update";
+
+                popupForm.style.display = 'flex';
+            })
+            .catch(err => console.error("Fetch error:", err));
+    });
+});
+
+});
+
+
 
 </script>
 
