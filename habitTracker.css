@@ -372,3 +372,20 @@ form input[type="text"]:focus {
 }
 
 /* ------------------------ADD HABIT POP UP------------------------ */
+
+.chart-row {
+  display: flex;
+  justify-content: center; 
+  gap: 20px;               
+}
+
+.chart-container {
+  width: 150px;  
+  height: 150px;
+  text-align: center;
+}
+
+.chart-container canvas {
+  width: 100% !important; 
+  height: 100% !important;
+}

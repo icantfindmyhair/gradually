@@ -19,6 +19,7 @@ require 'database.php';
     <link rel="stylesheet" href="hamburger.css">
     <?php include 'hamburger.php'; ?>
     <script src="hamburger.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 </head>
 
@@ -157,11 +158,59 @@ echo '</ul>';
             </div>
         </div>
 
-        <div class="overview">
-            <h2>Habit Overview</h2>
-            <p>circle thing to show total habits completed, daily completed percentage, average completion rate (?)</p>
-            <p>graph of completion rate for each day for the last 30days/1 year? </p>
-        </div>
+        <?php
+date_default_timezone_set('Asia/Kuala_Lumpur');
+$date = date('Y-m-d');
+$user_id = $_SESSION['user_id'];
+
+$sql = '
+    SELECT 
+        COUNT(h.habit_id) AS total_habits,
+        SUM(CASE WHEN l.status = 1 THEN 1 ELSE 0 END) AS completed
+    FROM habit_type h
+    LEFT JOIN habit_log l 
+           ON h.habit_id = l.habit_id 
+           AND l.date = ?
+    WHERE h.user_id = ?
+';
+
+$stmt = $con->prepare($sql);
+$stmt->bind_param('si', $date, $user_id);
+$stmt->execute();
+$result = $stmt->get_result();
+$row = $result->fetch_assoc();
+
+$total = (int) $row['total_habits'];
+$completed = (int) $row['completed'];
+$remaining = $total - $completed;
+
+$stmt->close();
+$total = (int) $row['total_habits'];
+$completed = (int) $row['completed'];
+$remaining = $total - $completed;
+
+$percentage = $total > 0 ? round(($completed / $total) * 100) : 0;
+?>
+
+
+<div class="overview">
+  <h2>Habit Overview</h2>
+  <div class="chart-row">
+    <div class="chart-container">
+      <canvas id="habitChart1"></canvas>
+      <p id="habitText1"></p>
+    </div>
+    <div class="chart-container">
+      <canvas id="habitChart2"></canvas>
+      <p id="habitText2"></p>
+    </div>
+    <div class="chart-container">
+      <canvas id="habitChart3"></canvas>
+      <p id="habitText3"></p>
+    </div>
+  </div>
+</div>
+
     </div>
 </body>
 
@@ -218,7 +267,7 @@ document.getElementById('open-form').addEventListener('click', () => {
       if (d.style.display === 'block') d.style.display = '';
     });
   }
-  
+
   document.addEventListener('click', (e) => {
     try {
       const menuBtn = e.target.closest('.menu-btn');
@@ -349,6 +398,69 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 
+//----------------------------------------------------------------------
+function createDonutChart(ctx, completed, remaining, line1, line2) {
+  const total = completed + remaining;
+
+  new Chart(ctx, {
+    type: "doughnut",
+    data: {
+      labels: ["Completed", "Remaining"],
+      datasets: [{
+        data: [completed, remaining],
+        //change colour later
+        backgroundColor: ["#36A2EB", "#E0E0E0"],
+        cutout: "70%"
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false }
+      }
+    },
+    plugins: [{
+      id: "centerText",
+      beforeDraw(chart) {
+        const { width, height, ctx } = chart;
+        ctx.save();
+
+        // First line
+        ctx.font = "bold 16px Zen Maru Gothic";
+        ctx.fillStyle = "#333";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(line1, width / 2, height / 2 - 10);
+
+        // Second line
+        ctx.font = "bold 12px Zen Maru Gothic";
+        ctx.fillStyle = "#666";
+        ctx.fillText(line2, width / 2, height / 2 + 12);
+
+        ctx.restore();
+      }
+    }]
+  });
+}
+
+createDonutChart(
+  document.getElementById("habitChart1"),
+  2, 3,
+  "2/5", "Habits"
+);
+
+createDonutChart(
+  document.getElementById("habitChart2"),
+  4, 1,
+  "4/5", "Completed"
+);
+
+createDonutChart(
+  document.getElementById("habitChart3"),
+  1, 5,
+  "1/6", "In Progress"
+);
 
 
 </script>
