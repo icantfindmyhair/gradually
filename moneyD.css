@@ -66,6 +66,12 @@ body {
 .tabs-bar .tab.active{
   background-color: rgba(170, 170, 170, 0.6667);
 }
+
+.tabs-bar .tab a{
+  text-decoration: none;
+  color: black;
+}
+
 /* Dashboard content */
 .dashboard{
   display:flex;

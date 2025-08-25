@@ -11,8 +11,40 @@ require("database.php");
 $labels = [];
 $values = [];
 
+$view = $_GET['view'] ?? 'monthly'; // default month
+
+$date = isset($_GET['date']) ? intval($_GET['date']) : date("d");
 $month = isset($_GET['month']) ? intval($_GET['month']) : date("n"); // 1–12
 $year  = isset($_GET['year']) ? intval($_GET['year']) : date("Y");
+
+//Handle view type
+switch($view){
+
+    case 'daily':
+        $startDate = $year."-".$month."-".$date; //today's date
+        $endDate = $year."-".$month."-".$date;
+        break;
+
+    case 'weekly':
+        $startDate = $year."-".$month."-".($date-6); // today's date - 6 => last week
+        $endDate = $year."-".$month."-".$date; //today's date
+        break;
+
+    case 'monthly':
+        $startDate = $year."-".$month."-".date("d"); //start of the month
+        $endDate = $year."-".$month."-".date("t"); //end of the month
+        break;
+
+    case 'yearly':
+        $startDate = $year."-".date('01')."-".date('01'); //start of the year
+        $endDate = $year."-".date('12')."-".date('y'); //start of the end
+        break;
+
+    default: //Follow monthly 
+        $startDate = $year."-".$month."-".date("d");
+        $endDate = $year."-".$month."-".date("t");
+}
+
 if ($month < 1) { $month = 12; $year--; }
 if ($month > 12) { $month = 1; $year++; }
 //Convert to word
@@ -74,15 +106,56 @@ if (isset($_GET['trans_id']) && ctype_digit($_GET['trans_id'])): ?>
         <!--Top selection-->
         <div class="top-selection">
             <div class="month-bar">
-                <a href="?month=<?= $month-1 ?>&year=<?= $year ?>"><button class="material-symbols-outlined">arrow_back_ios</button></a>
-                <div class="Month coiny-regular"><?php echo $monthName. " ". $year ?></div>
-                <a href="?month=<?= $month+1 ?>&year=<?= $year ?>"><button class="material-symbols-outlined">arrow_forward_ios</button></a>
+                <?php
+                if($view == 'monthly') :?>
+
+                    <a href="?view=monthly&month=<?= $month-1 ?>&year=<?= $year ?>"><button class="material-symbols-outlined">arrow_back_ios</button></a>
+                    <div class="Month coiny-regular">
+                        <?php 
+                            echo $monthName. " ". $year;
+                        ?>
+                    </div>
+                    <a href="?view=monthly&month=<?= $month+1 ?>&year=<?= $year ?>"><button class="material-symbols-outlined">arrow_forward_ios</button></a>
+
+                <?php elseif($view == 'daily') :?>
+                    <a href="?view=daily&date=<?= $date-1 ?>&month=<?= $month ?>&year=<?= $year ?>"><button class="material-symbols-outlined">arrow_back_ios</button></a>
+                    <div class="Month coiny-regular">
+                        <?php 
+                            echo $date. " ". $monthName. " ". $year;
+                        ?>
+                    </div>
+                    <a href="?view=daily&date=<?= $date+1 ?>&month=<?= $month ?>&year=<?= $year ?>"><button class="material-symbols-outlined">arrow_forward_ios</button></a>
+
+                <?php elseif($view == 'weekly') :?>
+                    <a href="?view=weekly&date=<?= $date-6 ?>&month=<?= $month ?>&year=<?= $year ?>"><button class="material-symbols-outlined">arrow_back_ios</button></a>
+                    <div class="Month coiny-regular">
+                        <?php 
+                            echo ($date-6). " - ". $date." ". $monthName. " ". $year;
+                        ?>
+                    </div>
+                    <a href="?view=weekly&date=<?= $date+6 ?>&month=<?= $month ?>&year=<?= $year ?>"><button class="material-symbols-outlined">arrow_forward_ios</button></a>
+                
+                <?php else :?>
+                    <a href="?view=yearly&year=<?= $year-1 ?>"><button class="material-symbols-outlined">arrow_back_ios</button></a>
+                    <div class="Month coiny-regular">
+                        <?php 
+                            echo $year; 
+                        ?>
+                    </div>
+                    <a href="?view=yearly&year=<?= $year+1 ?>"><button class="material-symbols-outlined">arrow_forward_ios</button></a>
+                <?php endif;?>
+
             </div>
             <div id="selectionButtons" class= "tabs-bar">
-                <button class="tab selectionButton coiny-regular" data-value="daily">Daily</button>
-                <button class="tab selectionButton coiny-regular" data-value="weekly">Weekly</button>
-                <button class="tab selectionButton active coiny-regular" data-value="monthly">Monthly</button>
-                <button class="tab selectionButton coiny-regular" data-value="yearly">Yearly</button>
+                <?php
+                $views = ['daily' => 'Daily', 'weekly' => 'Weekly', 'monthly' => 'Monthly', 'yearly' => 'Yearly'];
+                foreach ($views as $key => $label) {
+                    $activeClass = ($view == $key) ? 'active' : '';
+                    echo '<button class="tab selectionButton ' . $activeClass . ' coiny-regular">
+                            <a href="moneyDashboard.php?view=' . $key . '">' . $label . '</a>
+                        </button>';
+                }
+                ?>
             </div>
         </div>
         <!-- End of Top selection-->
@@ -99,8 +172,7 @@ if (isset($_GET['trans_id']) && ctype_digit($_GET['trans_id'])): ?>
                         //1. moneyBar- Month
                         $queryTotInc = "SELECT SUM(amount) AS total
                                         FROM transaction
-                                        WHERE MONTH(`date`) = $month
-                                        AND YEAR(`date`) = $year
+                                        WHERE date BETWEEN '$startDate' AND '$endDate'
                                         AND user_id = $userId
                                         AND type = 'income';
                                         ";
@@ -119,8 +191,7 @@ if (isset($_GET['trans_id']) && ctype_digit($_GET['trans_id'])): ?>
 
                         $queryTotExp = "SELECT SUM(amount) AS total
                                         FROM transaction
-                                        WHERE MONTH(`date`) = $month
-                                        AND YEAR(`date`) = $year
+                                        WHERE date BETWEEN '$startDate' AND '$endDate'
                                         AND user_id = $userId
                                         AND type = 'expense';
                                         ";
@@ -137,7 +208,7 @@ if (isset($_GET['trans_id']) && ctype_digit($_GET['trans_id'])): ?>
                         //Start of money bar chart
                         //Width for the overall bar: 359px
                         $BAR_W = 359;
-                        $den = max(1,$totalIncome + $totalExpenses); //To avoid divided by 0
+                        $den = max(1, $totalIncome + $totalExpenses); //To avoid divided by 0
                         $widthForIncBox = $BAR_W * ($totalIncome  / $den);
                         $widthForExpBox = $BAR_W * ($totalExpenses / $den);
                         ?>
@@ -171,14 +242,14 @@ if (isset($_GET['trans_id']) && ctype_digit($_GET['trans_id'])): ?>
                             </div>
                             <!-- Details about exp-->
                             <div class="detailExp coiny-regular">
+                                
                                 <?php
                                 //2. Query based on category, draw a doughnut chart and count expenses 
                                 $queryExpMon = "SELECT category, SUM(amount) AS total
                                                 FROM  transaction
-                                                WHERE MONTH(`date`) = $month
-                                                AND YEAR(`date`) = $year
-                                                AND user_id = $userId
+                                                WHERE user_id = $userId
                                                 AND type = 'expense'
+                                                AND date BETWEEN '$startDate' AND '$endDate'
                                                 GROUP BY category
                                                 ORDER BY total desc;
                                             ";
@@ -192,6 +263,7 @@ if (isset($_GET['trans_id']) && ctype_digit($_GET['trans_id'])): ?>
                                         $labels[] = $row['category'];
                                         $values[] = (float)$row['total'];//Correct
                                 ?>
+
                                 <div class="wrapthem">
                                     <div class="detailCat"><?php echo $row['category']?></div>
                                     <div class="detailTot"><?php echo number_format((float)$row['total'],2)?></div>
@@ -213,8 +285,7 @@ if (isset($_GET['trans_id']) && ctype_digit($_GET['trans_id'])): ?>
                                 //3. Query based on payment type
                                 $queryExpMon = "SELECT account_type, SUM(amount) AS total
                                                 FROM  transaction
-                                                WHERE MONTH(`date`) = $month
-                                                AND YEAR(`date`) = $year
+                                                WHERE date BETWEEN '$startDate' AND '$endDate'
                                                 AND user_id = $userId
                                                 AND type = 'expense'
                                                 GROUP BY account_type
@@ -255,9 +326,7 @@ if (isset($_GET['trans_id']) && ctype_digit($_GET['trans_id'])): ?>
                         //4. Query all transaction made
                         $queryEachTran = "SELECT trans_id, amount, type, category, account_type, type, DAY(`date`) AS day, description
                                         FROM  transaction
-                                        WHERE MONTH(`date`) = $month
-                                        AND YEAR(`date`) = $year
-                                        AND user_id = $userId
+                                        WHERE user_id = $userId
                                         ORDER BY day desc;
                                     ";
 

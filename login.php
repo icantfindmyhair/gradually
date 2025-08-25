@@ -146,6 +146,7 @@ if (isset($_POST['username'])) {
     <?php }?>
 </div>
 <script>
+    //For pop up dialog 
     let popup = document.getElementById("popup");
     function openPopup(trans_id){
         popup.classList.add("open-popup");
@@ -153,6 +154,7 @@ if (isset($_POST['username'])) {
     function closePopup(){
         popup.classList.remove("open-popup");
     }
+    //Script for 
 </script>
 </body>
 </html>
