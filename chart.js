@@ -8,16 +8,13 @@ function createDonutChart(ctx, completed, remaining, mainText, subText, labelTex
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
 
-      // First line (big main text, e.g. 3/5)
       ctx.font = "bold 16px Zen Maru Gothic";
       ctx.fillStyle = "#000";
       ctx.fillText(mainText, width / 2, height / 2 - 15);
 
-      // Second line (always says Completed)
       ctx.font = "12px Zen Maru Gothic";
       ctx.fillText("Completed", width / 2, height / 2 + 2);
 
-      // Third line (context, e.g. Today / This Week / This Month)
       ctx.font = "12px Zen Maru Gothic";
       ctx.fillText(labelText, width / 2, height / 2 + 18);
 

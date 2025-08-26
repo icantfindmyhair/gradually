@@ -34,6 +34,7 @@ require 'database.php';
         <div class="todo-list">
             <div class="todo-header">
                 <h2 id="today-date">Saturday, Aug 16</h2>
+                <!-- <input type="date" id="datePicker"> -->
                 <button class="add-btn" id="open-form">+</button>
             </div>
 
@@ -208,6 +209,37 @@ $percentage = $total > 0 ? round(($completed / $total) * 100) : 0;
 
 <div class="overview">
   <h2>Habit Overview</h2>
+<div id="quoteBox" style="
+    background-color: #ffffff80;
+    border-top: 2px solid #2B3C48ff;
+    border-bottom: 2px solid #2B3C48ff;
+    border-left: 5px solid #2B3C48ff;
+    border-right: 5px solid #2B3C48ff;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 6px;
+    font-family: 'Zen Maru Gothic', sans-serif;
+    text-align: center;
+">
+  <div style="font-weight: bold; font-size: 18px; margin-bottom: 5px;">
+    Current Longest Streak
+  </div>
+  <div id="streakNumber" style="
+      font-size: 32px;
+      font-weight: bold;
+      color: #2B3C48;
+      margin-bottom: 10px;
+  ">
+    0
+  </div>
+  <div id="quoteText" style="
+      font-style: italic;
+      font-size: 16px;
+  ">
+    Loading motivational quote...
+  </div>
+</div>
+
   <div style="display: flex; gap: 20px; justify-content: center;">
     <div style="width: 150px; height: 150px;">
       <canvas id="habitChart1"></canvas>
@@ -229,6 +261,7 @@ $percentage = $total > 0 ? round(($completed / $total) * 100) : 0;
 <script src="habitMenu.js"></script>
 <script src="habitForm.js"></script>
 <script src="habitLog.js"></script>
+<script src="motivationalQuotes.js"></script>
 <script src="chart.js"></script>
 
 </html>
