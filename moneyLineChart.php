@@ -327,7 +327,7 @@ $userId = $_SESSION['user_id'];
         // Combine all unique days
         let combineDay = [...lbsExp, ...lbsInc];
         const setUniqueDay = new Set(combineDay);
-        const uniqueDay = [...setUniqueDay];
+        let uniqueDay = [...setUniqueDay];
 
         // Ensure consistency
         let filledValExp = uniqueDay.map(day => {
