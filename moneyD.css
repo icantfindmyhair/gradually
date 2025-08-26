@@ -202,6 +202,10 @@ body {
 .calcType{
   width: 655px;
   height: 223px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: #888 #ccc;
 }
 
 .labelAccount{
@@ -242,7 +246,7 @@ body {
 .trans-content{
   display: flex;
   flex-direction: column;
-  width: 529px; 
+  width: 570px; 
   height: 683px; 
   background: #A5AAAA;
 }
@@ -256,7 +260,7 @@ body {
 
 .commonLabel{
   display: flex;
-  width: 529px;
+  width: 570px;
   height:50px;
   justify-content: space-between;
   padding: 10px 30px;
@@ -268,7 +272,7 @@ body {
 }
 
 .wraphistory{
-  width:528px;
+  width:570px;
   height: 85px;
   position: relative;
   display: flex;
@@ -292,6 +296,12 @@ body {
 
 .wraphistory:hover{
   background-color: #777e7e;
+}
+
+.wrapName .name{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width:300px;
 }
 
 /* Modification CSS */

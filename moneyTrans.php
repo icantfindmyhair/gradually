@@ -13,6 +13,7 @@ if(isset($_POST['new_trans']) && $_POST['new_trans'] == 1){
     $amount = $_REQUEST['amount'];
     $account_type = $_REQUEST['account_type'];
     $desc = $_REQUEST['desc'] ?? '';
+    $desc = mysqli_real_escape_string($con, $desc); //Allow user to use '
     $type = $_REQUEST['type_handler'];
     $userId = $_SESSION['user_id'];
 

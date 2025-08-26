@@ -20,6 +20,8 @@
 }
 .side-menu a:hover {
     background-color: rgb(115, 129, 129);
+    color: #D4DEDDff;
+    text-decoration: none;
 }
 .side-menu .close-btn {
     position: absolute;

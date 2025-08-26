@@ -361,7 +361,7 @@ if (isset($_GET['trans_id']) && ctype_digit($_GET['trans_id'])): ?>
                         $queryEachTran = "SELECT trans_id, amount, type, category, account_type, type, DAY(date) AS day, MONTH(date) AS month, description
                                         FROM  transaction
                                         WHERE user_id = $userId
-                                        ORDER BY date desc;
+                                        ORDER BY date desc, trans_id desc;
                                         ";
 
                         $result4 = mysqli_query($con, $queryEachTran);
@@ -397,6 +397,7 @@ if (isset($_GET['trans_id']) && ctype_digit($_GET['trans_id'])): ?>
                                     $amount = $_REQUEST['amount'];
                                     $account_type = $_REQUEST['account_type'];
                                     $desc = $_REQUEST['desc'] ?? '';
+                                    $desc = mysqli_real_escape_string($con, $desc); //Allow user to use '
                                     $type = $row['type'];
 
                                     $update="UPDATE transaction set date='".$date."',
@@ -433,10 +434,10 @@ if (isset($_GET['trans_id']) && ctype_digit($_GET['trans_id'])): ?>
                                     <tr>
                                         <td><label class="coiny-regular" for="account_type">Account</label></td>
                                         <td><select name="account_type" name="account_type" id="account_type">
-                                            <option value="Cash">Cash</option>
-                                            <option value="E-wallet">E-wallet</option>
-                                            <option value="Card">Card</option>
-                                            <option value="BankAccount">Back Account</option>
+                                            <option value="Cash" <?php if($row['account_type'] == 'Cash') echo 'selected';?>>Cash</option>
+                                            <option value="E-wallet"<?php if($row['account_type'] == 'E-wallet') echo 'selected';?>>E-wallet</option>
+                                            <option value="Card"<?php if($row['account_type'] == 'Card') echo 'selected';?>>Card</option>
+                                            <option value="BankAccount"<?php if($row['account_type'] == 'BankAccount') echo 'selected';?>>Back Account</option>
                                         </select></td>
                                     </tr>
                                     <tr>
