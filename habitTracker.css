@@ -89,6 +89,9 @@ a.title:active {
 
 .todo-items li {
   list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   padding: 10px 0;
   border-bottom: 1px solid #ccc;
   font-size: 16px;
@@ -160,6 +163,54 @@ a.title:active {
 .add-btn:hover {
   background-color: #151E27;
 }
+
+.habit-menu {
+    position: relative;
+    margin-left: auto;
+}
+
+.menu-btn {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 4px;
+}
+
+.menu-dropdown {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    z-index: 10;
+    min-width: 100px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.menu-dropdown.show {
+  display: block;
+}
+
+.menu-dropdown button {
+    width: 100%;
+    padding: 8px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    text-align: left;
+}
+
+.menu-dropdown button:hover {
+    background: #f2f2f2;
+}
+
+.habit-menu.show .menu-dropdown {
+    display: block;
+}
+
 
 /* ------------------------TO DO LIST ITSELF------------------------ */
 
@@ -321,3 +372,20 @@ form input[type="text"]:focus {
 }
 
 /* ------------------------ADD HABIT POP UP------------------------ */
+
+.chart-row {
+  display: flex;
+  justify-content: center; 
+  gap: 20px;               
+}
+
+.chart-container {
+  width: 150px;  
+  height: 150px;
+  text-align: center;
+}
+
+.chart-container canvas {
+  width: 100% !important; 
+  height: 100% !important;
+}
