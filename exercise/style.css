@@ -177,3 +177,10 @@
     .notice{
         font-size:12px;color:var(--muted)
     }
+
+    .user-info {
+    display: flex;
+    align-items: center;
+    gap: 6px; /* space between username and logout button */
+}
+

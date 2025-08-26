@@ -1,21 +1,24 @@
 <?php
-// ---- DB Connection ----
-$host = "localhost";
-$user = "root";
-$password = "";
-$dbname = "gradually_db";
+session_start();
+if (!isset($_SESSION['user_id'])) {
+    header("Location: ../login.php");
+    exit();
+}
 
-mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT); // nicer errors in dev
-try {
-    $conn = new mysqli($host, $user, $password, $dbname);
-    $conn->set_charset("utf8mb4");
-} catch (Exception $e) {
+$username = $_SESSION['username'] ?? 'Guest';
+
+// ---- Include database connection ----
+require_once __DIR__ . '/../database.php';
+require_once __DIR__ . '/../includes/auth.php';
+
+// Verify database connection
+if (!$con) {
     die("Database connection failed.");
 }
 
-$flash = null; // for toast message
+$flash = null;
 
-// ---- Handle form submission ----
+// ---- Handle form submission for adding new exercise ----
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $exercise_type    = trim($_POST['exercise_type'] ?? '');
     $duration_minutes = (int)($_POST['duration_minutes'] ?? 0);
@@ -24,9 +27,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $notes            = trim($_POST['notes'] ?? '');
 
     try {
-        $stmt = $conn->prepare("INSERT INTO exercises (exercise_type, duration_minutes, calories_burnt, exercise_date, notes, created_at, updated_at) 
-                                VALUES (?, ?, ?, ?, ?, NOW(), NOW())");
-        $stmt->bind_param("siiss", $exercise_type, $duration_minutes, $calories_burnt, $exercise_date, $notes);
+        $stmt = $con->prepare("INSERT INTO exercises 
+            (user_id, exercise_type, duration_minutes, calories_burnt, exercise_date, notes, created_at, updated_at) 
+            VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW())");
+        $stmt->bind_param("isiiis", $_SESSION['user_id'], $exercise_type, $duration_minutes, $calories_burnt, $exercise_date, $notes);
         $stmt->execute();
         $flash = ["type" => "success", "text" => "New exercise record created successfully."];
         $stmt->close();
@@ -35,61 +39,106 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 }
 
-// ---- Stats ----
-$stats = [
-    "total_minutes"  => 0,
-    "total_calories" => 0,
-    "total_sessions" => 0
-];
-
-$resultStats = $conn->query("
+// ---- Fetch overall stats for current user ----
+$stats = ["total_minutes" => 0, "total_calories" => 0, "total_sessions" => 0];
+$resultStats = $con->prepare("
     SELECT 
         COALESCE(SUM(duration_minutes),0) AS total_minutes, 
         COALESCE(SUM(calories_burnt),0)   AS total_calories,
         COUNT(*)                          AS total_sessions 
     FROM exercises
+    WHERE user_id = ?
 ");
-if ($resultStats) {
-    $stats = $resultStats->fetch_assoc();
-    $resultStats->free();
+$resultStats->bind_param('i', $_SESSION['user_id']);
+$resultStats->execute();
+$resStats = $resultStats->get_result();
+if ($resStats) {
+    $stats = $resStats->fetch_assoc();
+    $resStats->free();
 }
+$resultStats->close();
 
-// Last 7 days summary
+// ---- Last 7 days summary for current user ----
 $last7 = ["minutes" => 0, "calories" => 0, "sessions" => 0];
-$result7 = $conn->query("
+$result7 = $con->prepare("
     SELECT 
         COALESCE(SUM(duration_minutes),0) AS minutes,
         COALESCE(SUM(calories_burnt),0)   AS calories,
         COUNT(*)                          AS sessions
     FROM exercises
-    WHERE exercise_date >= (CURDATE() - INTERVAL 7 DAY)
+    WHERE user_id = ? AND exercise_date >= (CURDATE() - INTERVAL 7 DAY)
 ");
-if ($result7) {
-    $last7 = $result7->fetch_assoc();
-    $result7->free();
+$result7->bind_param('i', $_SESSION['user_id']);
+$result7->execute();
+$res7 = $result7->get_result();
+if ($res7) {
+    $last7 = $res7->fetch_assoc();
+    $res7->free();
+}
+$result7->close();
+
+// ---- Handle search & date filters ----
+$search   = $_GET['search'] ?? '';
+$dateFrom = $_GET['dateFrom'] ?? '';
+$dateTo   = $_GET['dateTo'] ?? '';
+
+$where = ["user_id = ?"];
+$params = [];
+$types = 'i';
+$params[] = &$_SESSION['user_id'];
+
+// Search by type or notes
+if ($search !== '') {
+    $where[] = "(exercise_type LIKE ? OR notes LIKE ?)";
+    $searchWildcard = "%$search%";
+    $params[] = &$searchWildcard;
+    $params[] = &$searchWildcard;
+    $types .= 'ss';
 }
 
-// ---- Fetch all records ----
-$result = $conn->query("SELECT * FROM exercises ORDER BY exercise_date DESC, created_at DESC");
+// Date range
+if ($dateFrom !== '') {
+    $where[] = "exercise_date >= ?";
+    $params[] = &$dateFrom;
+    $types .= 's';
+}
+if ($dateTo !== '') {
+    $where[] = "exercise_date <= ?";
+    $params[] = &$dateTo;
+    $types .= 's';
+}
 
-// We keep connection open until the end of HTML to allow num_rows checks, then close.
+$sql = "SELECT * FROM exercises";
+if ($where) {
+    $sql .= " WHERE " . implode(" AND ", $where);
+}
+$sql .= " ORDER BY exercise_date DESC, created_at DESC";
+
+$stmt = $con->prepare($sql);
+if ($stmt && $params) {
+    $stmt->bind_param($types, ...$params);
+}
+$stmt->execute();
+$result = $stmt->get_result();
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Exercise Tracker — Student Routine Organizer</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
-
 </head>
 <body>
 <div class="container">
     <div class="topbar">
         <div class="brand-mini">Student Routine Organizer · <span class="muted">Exercise Tracker</span></div>
         <div class="tools">
+            <div class="user-info">
+                <span class="welcome">Welcome <?= htmlspecialchars($_SESSION['username']) ?>!</span>
+            </div>
             <button class="toggle" id="modeToggle" title="Toggle light/dark">🌓 Theme</button>
             <button class="toggle" id="exportCsvBtn" title="Export CSV">⬇️ Export</button>
         </div>
@@ -97,7 +146,7 @@ $result = $conn->query("SELECT * FROM exercises ORDER BY exercise_date DESC, cre
 
     <header class="card">
         <div class="title">Exercise Tracker</div>
-        <p class="subtitle">Log workouts, track calories and minutes, and see your weekly progress. <span class="notice">All fields unchanged to keep backend compatibility.</span></p>
+        <p class="subtitle">Log workouts, track calories and minutes, and see your weekly progress. <span class="notice">Works hard, Play hard</span></p>
         <div style="position:absolute;right:-30px;bottom:-30px;opacity:.18;font-size:180px;font-weight:800;">🏃‍♀️</div>
     </header>
 
@@ -106,13 +155,15 @@ $result = $conn->query("SELECT * FROM exercises ORDER BY exercise_date DESC, cre
         <section class="card">
             <div class="card-body">
                 <div class="section-title">Exercise Records</div>
-                <div class="tools" style="margin-bottom:10px">
-                    <input id="searchInput" type="text" placeholder="Search by type or notes…">
-                    <input id="dateFrom" type="date" title="From date">
+                <form method="GET" class="tools" style="margin-bottom:10px">
+                    <input name="search" type="text" placeholder="Search by type or notes…" value="<?= htmlspecialchars($search) ?>">
+                    <input name="dateFrom" type="date" title="From date" value="<?= htmlspecialchars($dateFrom) ?>">
                     <span class="muted">to</span>
-                    <input id="dateTo" type="date" title="To date">
-                    <button class="btn secondary" id="clearFilters">Clear</button>
-                </div>
+                    <input name="dateTo" type="date" title="To date" value="<?= htmlspecialchars($dateTo) ?>">
+                    <button type="submit" class="btn secondary">Search</button>
+                    <button type="button" class="btn" id="clearFilters">Clear</button>
+                </form>
+
                 <div class="table-wrap">
                     <table id="recordsTable">
                         <thead>
@@ -226,100 +277,23 @@ $result = $conn->query("SELECT * FROM exercises ORDER BY exercise_date DESC, cre
     </div>
 </div>
 
-<?php $conn->close(); ?>
+<?php $con->close(); ?>
 
 <?php if ($flash): ?>
 <div class="toast <?= $flash['type'] === 'success' ? 'success' : 'error' ?>" id="toast">
     <span><?= htmlspecialchars($flash['text']) ?></span>
 </div>
 <script>
-    setTimeout(()=>{ const t=document.getElementById('toast'); if(t){ t.style.opacity='0'; t.style.transform='translateY(10px)'; setTimeout(()=>t.remove(), 300); } }, 3000);
+setTimeout(()=>{ const t=document.getElementById('toast'); if(t){ t.style.opacity='0'; t.style.transform='translateY(10px)'; setTimeout(()=>t.remove(), 300); } }, 3000);
 </script>
 <?php endif; ?>
 
 <script>
-// --- Theme toggle (persists) ---
-(function(){
-    const key='exercise-theme';
-    const saved=localStorage.getItem(key);
-    if(saved==='light') document.documentElement.classList.add('light');
-    const btn=document.getElementById('modeToggle');
-    btn.addEventListener('click',()=>{
-        document.documentElement.classList.toggle('light');
-        localStorage.setItem(key, document.documentElement.classList.contains('light') ? 'light' : 'dark');
-    });
-})();
-
-// --- Table filter & CSV export ---
-(function(){
-    const q = (s)=>document.querySelector(s);
-    const rows = ()=>Array.from(document.querySelectorAll('#recordsTable tbody tr'));
-    const search = q('#searchInput');
-    const from = q('#dateFrom');
-    const to = q('#dateTo');
-    const clear = q('#clearFilters');
-
-    function within(dateStr, fromStr, toStr){
-        if(!dateStr) return false;
-        const d = new Date(dateStr);
-        if(fromStr){ const f = new Date(fromStr); if(d < f) return false; }
-        if(toStr){ const t = new Date(toStr); if(d > t) return false; }
-        return true;
-    }
-
-    function applyFilters(){
-        const text = (search.value||'').toLowerCase();
-        const f = from.value; const t = to.value;
-        rows().forEach(tr=>{
-            const tds = tr.querySelectorAll('td');
-            const type  = (tds[1]?.textContent||'').toLowerCase();
-            const notes = (tds[5]?.textContent||'').toLowerCase();
-            const date  = (tds[4]?.textContent||'').trim();
-            const textMatch = !text || type.includes(text) || notes.includes(text);
-            const dateMatch = (!f && !t) || within(date, f, t);
-            tr.style.display = (textMatch && dateMatch) ? '' : 'none';
-        });
-    }
-
-    search.addEventListener('input', applyFilters);
-    from.addEventListener('change', applyFilters);
-    to.addEventListener('change', applyFilters);
-    clear.addEventListener('click', ()=>{
-        search.value=''; from.value=''; to.value=''; applyFilters();
-    });
-
-    // CSV export
-    document.getElementById('exportCsvBtn').addEventListener('click', ()=>{
-        const visibleRows = rows().filter(tr=>tr.style.display!=='none');
-        const all = [Array.from(document.querySelectorAll('#recordsTable thead th')).map(th=>th.innerText.trim())];
-        visibleRows.forEach(tr=>{
-            all.push(Array.from(tr.querySelectorAll('td')).map(td=>td.innerText.replace(/\n/g,' ').trim()));
-        });
-        const csv = all.map(r=>r.map(cell=>{
-            const c = cell.replace(/"/g,'""');
-            return `"${c}"`;
-        }).join(',')).join('\n');
-        const blob = new Blob([csv],{type:'text/csv;charset=utf-8;'});
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = 'exercise_records.csv';
-        a.click();
-        URL.revokeObjectURL(a.href);
-    });
-
-    // Simple client-side required validation styling
-    document.getElementById('exerciseForm').addEventListener('submit', (e)=>{
-        const form = e.currentTarget;
-        if(!form.checkValidity()){
-            e.preventDefault();
-            Array.from(form.elements).forEach(el=>{
-                if(el.willValidate && !el.checkValidity()){
-                    el.scrollIntoView({behavior:'smooth', block:'center'});
-                }
-            });
-        }
-    });
-})();
+document.getElementById('clearFilters').addEventListener('click', function() {
+    window.location.href = window.location.pathname;
+});
 </script>
+
+<script src="script.js"></script>
 </body>
 </html>
