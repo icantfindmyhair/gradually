@@ -44,19 +44,24 @@ $today_day = strtolower(date('l', strtotime($today_date)));
 $user_id = $_SESSION['user_id'];
 
 $sql = '
-        SELECT h.habit_id, h.habit_name, h.description,
-              COALESCE(l.status, 0) AS status
-        FROM habit_type h
-        LEFT JOIN habit_log l 
-              ON h.habit_id = l.habit_id AND l.date = ?
-        LEFT JOIN habit_repeat r 
-              ON h.habit_id = r.habit_id
-        WHERE h.user_id = ?
-          AND (
-              r.day_of_week = ?         -- habit repeats on this weekday
-              OR r.day_of_week IS NULL  -- no repeat rules, so default = every day
-          )
-    ';
+    SELECT h.habit_id, h.habit_name, h.description,
+          COALESCE(l.status, 0) AS status
+    FROM habit_type h
+    LEFT JOIN habit_log l 
+          ON h.habit_id = l.habit_id AND l.date = ?
+    WHERE h.user_id = ?
+    AND (
+        EXISTS (
+            SELECT 1 FROM habit_repeat r 
+            WHERE r.habit_id = h.habit_id 
+              AND r.day_of_week = ?
+        )
+        OR NOT EXISTS (
+            SELECT 1 FROM habit_repeat r 
+            WHERE r.habit_id = h.habit_id
+        )
+    )
+';
 $stmt = $con->prepare($sql);
 $stmt->bind_param('sis', $today_date, $user_id, $today_day);
 $stmt->execute();
