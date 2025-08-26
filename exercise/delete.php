@@ -8,27 +8,29 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !csrf_verify($_POST['csrf_token'] ?
     exit('Invalid request.');
 }
 
-$id = filter_var($_POST['id'] ?? 0, FILTER_VALIDATE_INT);
+$user_id = (int)($_SESSION['user_id'] ?? 0);
+$id      = (int)($_POST['id'] ?? 0);
 
-if (!$id || $id <= 0) {
-    redirect('/exercise/index.php');
+if ($user_id <= 0 || $id <= 0) {
+    redirect('index.php'); // relative redirect
 }
 
+// Ensure user exists
+$checkUser = $conn->prepare("SELECT id FROM users WHERE id = ?");
+$checkUser->bind_param('i', $user_id);
+$checkUser->execute();
+if ($checkUser->get_result()->num_rows === 0) {
+    exit('Error: User does not exist.');
+}
+$checkUser->close();
+
+// Delete
 $sql = "DELETE FROM exercises WHERE exercise_id = ? AND user_id = ?";
 $stmt = $conn->prepare($sql);
-
-if (!$stmt) {
-    error_log("Delete prepare failed: " . $conn->error);
-    exit('Database error. Please try again later.');
-}
-
-$stmt->bind_param('ii', $id, $_SESSION['user_id']);
+$stmt->bind_param('ii', $id, $user_id);
 
 if (!$stmt->execute()) {
-    error_log("Delete execute failed: " . $stmt->error);
-    exit('Could not delete record. Please try again.');
+    exit('Database error: ' . htmlspecialchars($stmt->error));
 }
 
-$stmt->close();
-
-redirect('/exercise/index.php');
+redirect('index.php'); // relative redirect

@@ -3,46 +3,41 @@ require_once __DIR__ . '/../includes/auth.php';
 require_once __DIR__ . '/../config/db.php';
 require_once __DIR__ . '/../includes/helpers.php';
 
-// CSRF + Method Check
 if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !csrf_verify($_POST['csrf_token'] ?? '')) {
     http_response_code(400);
     exit('Invalid request.');
 }
 
-$user_id         = (int)$_SESSION['user_id'];
+$user_id         = (int)($_SESSION['user_id'] ?? 0);
 $exercise_type   = trim($_POST['exercise_type'] ?? '');
-$duration_min    = filter_var($_POST['duration_min'] ?? 0, FILTER_VALIDATE_INT);
-$calories_burned = filter_var($_POST['calories_burned'] ?? 0, FILTER_VALIDATE_FLOAT);
+$duration_min    = (int)($_POST['duration_min'] ?? 0);
+$calories_burned = (float)($_POST['calories_burned'] ?? 0);
 $date            = input_date($_POST['date'] ?? '');
 $notes           = trim($_POST['notes'] ?? '');
 
-// ✅ Extra Validation (gives clearer error handling)
-$errors = [];
-if ($exercise_type === '') $errors[] = 'Exercise type is required.';
-if (!$date) $errors[] = 'Invalid or missing date.';
-if ($duration_min === false || $duration_min <= 0) $errors[] = 'Duration must be a positive number.';
-if ($calories_burned === false || $calories_burned < 0) $errors[] = 'Calories must be zero or higher.';
-
-if ($errors) {
-    // You could redirect back with query params OR show inline
-    // For now just simple exit
-    exit('Validation failed: ' . implode(' ', $errors));
+// Validation
+if ($user_id <= 0 || $exercise_type === '' || !$date || $duration_min <= 0 || $calories_burned < 0) {
+    exit('Validation failed. Please go back and check your inputs.');
 }
 
-// ✅ Safer prepared statement
+// Ensure user exists in DB
+$checkUser = $conn->prepare("SELECT id FROM users WHERE id = ?");
+$checkUser->bind_param('i', $user_id);
+$checkUser->execute();
+$result = $checkUser->get_result();
+if ($result->num_rows === 0) {
+    exit('Error: User does not exist.');
+}
+$checkUser->close();
+
+// Insert
 $sql = "INSERT INTO exercises (user_id, exercise_type, duration_min, calories_burned, date, notes)
         VALUES (?, ?, ?, ?, ?, ?)";
 $stmt = $conn->prepare($sql);
-if (!$stmt) {
-    error_log("DB Prepare failed: " . $conn->error);
-    exit('A database error occurred. Please try again.');
-}
-
 $stmt->bind_param('isidss', $user_id, $exercise_type, $duration_min, $calories_burned, $date, $notes);
+
 if (!$stmt->execute()) {
-    error_log("DB Execute failed: " . $stmt->error);
-    exit('A database error occurred while saving. Please try again.');
+    exit('Database error: ' . htmlspecialchars($stmt->error));
 }
 
-// ✅ Redirect after success
 redirect('/exercise/index.php');
