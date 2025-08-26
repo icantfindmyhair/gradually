@@ -34,11 +34,21 @@ require 'database.php';
         <div class="todo-list">
             <div class="todo-header">
                 <h2 id="today-date">Saturday, Aug 16</h2>
-                <!-- <input type="date" id="datePicker"> -->
                 <button class="add-btn" id="open-form">+</button>
             </div>
+    <button class="viewHabitsBtn" id="viewHabitsBtn">View all habits</button>
 
-    <?php
+    <div id="habitModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h3>All Active Habits</h3>
+    <div id="allHabitsContainer">
+      Loading habits...
+    </div>
+  </div>
+</div>
+
+  <?php
     date_default_timezone_set('Asia/Kuala_Lumpur');
 $today_date = date('Y-m-d');
 $today_day = strtolower(date('l', strtotime($today_date)));
@@ -262,6 +272,7 @@ $percentage = $total > 0 ? round(($completed / $total) * 100) : 0;
 <script src="habitForm.js"></script>
 <script src="habitLog.js"></script>
 <script src="motivationalQuotes.js"></script>
+<script src="habitListAll.js"></script>
 <script src="chart.js"></script>
 
 </html>
