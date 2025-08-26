@@ -1,10 +1,8 @@
 <?php 
-session_start();
-
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-//include("auth.php");
+include("auth.php");
 require("database.php");
 
 //Based on month query
@@ -32,7 +30,7 @@ switch($view){
         break;
 
     case 'monthly':
-        $startDate = $year."-".$month."-".date("d"); //start of the month
+        $startDate = $year."-".$month."-".date("01"); //start of the month
         $endDate = $year."-".$month."-".date("t"); //end of the month
         break;
 
@@ -360,11 +358,11 @@ if (isset($_GET['trans_id']) && ctype_digit($_GET['trans_id'])): ?>
                     <div class="transhistory coiny-regular">
                         <?php
                         //4. Query all transaction made
-                        $queryEachTran = "SELECT trans_id, amount, type, category, account_type, type, DAY(`date`) AS day, description
+                        $queryEachTran = "SELECT trans_id, amount, type, category, account_type, type, DAY(date) AS day, MONTH(date) AS month, description
                                         FROM  transaction
                                         WHERE user_id = $userId
-                                        ORDER BY day desc;
-                                    ";
+                                        ORDER BY date desc;
+                                        ";
 
                         $result4 = mysqli_query($con, $queryEachTran);
                         if(!$result4) {
@@ -374,7 +372,7 @@ if (isset($_GET['trans_id']) && ctype_digit($_GET['trans_id'])): ?>
                             while($row = mysqli_fetch_assoc($result4)) {
                         ?>
                         <div class="wraphistory coiny-regular" onclick="openPopup(<?php echo $row['trans_id']; ?>)" oncontextmenu="if(confirm('Delete this transaction?')) {window.location.href='moneyTransDelete.php?trans_id=<?php echo $row['trans_id']; ?>'; } return false;">
-                            <div class="date"><?php echo $row['day'] ?></div>
+                            <div class="date"><?php echo $row['day']."|".$row['month'] ?></div>
                             <div class="wrapName">
                                 <div class="name"><?php echo $row['description'] ?></div>
                                 <div class="cat" style="font-size: 20px;"><?php echo $row['category'] ?></div>

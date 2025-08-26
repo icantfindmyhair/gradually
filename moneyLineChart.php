@@ -1,10 +1,8 @@
 <?php 
-session_start();
-
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-//include("auth.php");
+include("auth.php");
 require("database.php");
 
 //Based on month query
@@ -30,7 +28,7 @@ $monthNames = [
 switch($view){
 
     case 'monthly':
-        $startDate = $year."-".$month."-".date("d"); //start of the month
+        $startDate = $year."-".$month."-".date("01"); //start of the month
         $endDate = $year."-".$month."-".date("t"); //end of the month
         break;
 
@@ -143,6 +141,7 @@ $userId = $_SESSION['user_id'];
         <div class="top-selection">
             <div class="month-bar">
                 <?php
+                //Monthly summary
                 if($view == 'monthly') :?>
 
                     <a href="?view=monthly&month=<?= $month-1 ?>&year=<?= $year ?>"><button class="material-symbols-outlined">arrow_back_ios</button></a>
@@ -152,7 +151,7 @@ $userId = $_SESSION['user_id'];
                         ?>
                     </div>
                     <a href="?view=monthly&month=<?= $month+1 ?>&year=<?= $year ?>"><button class="material-symbols-outlined">arrow_forward_ios</button></a>
-
+                
                 <?php else :?>
                     <a href="?view=yearly&year=<?= $year-1 ?>"><button class="material-symbols-outlined">arrow_back_ios</button></a>
                     <div class="Month coiny-regular">
@@ -191,6 +190,91 @@ $userId = $_SESSION['user_id'];
         </div>
                                 
         <?php
+        switch($view){
+
+    case 'monthly':
+        //1. Query based on monthly type, draw a line chart
+        $queryExpMonth = "SELECT DAY(date) AS Day, SUM(amount) AS total
+                        FROM  transaction
+                        WHERE user_id = $userId
+                        AND type = 'expense'
+                        AND date BETWEEN '$startDate' AND '$endDate'
+                        GROUP BY Day 
+                        ORDER BY date;
+                    ";
+
+        $result1 = mysqli_query($con, $queryExpMonth);
+        if(!$result1) {
+            die(mysqli_error($con));
+        }
+        else {
+            while($row = mysqli_fetch_assoc($result1)) {
+                $labelsExp[] = $row['Day'];
+                $valuesExp[] = (float)$row['total'];//Correct
+            }}
+
+        $incomeExpMonth = "SELECT DAY(date) AS Day, MONTH(date) AS Month, SUM(amount) AS total
+                        FROM  transaction
+                        WHERE user_id = $userId
+                        AND type = 'income'
+                        AND date BETWEEN '$startDate' AND '$endDate'
+                        GROUP BY Day, Month
+                        ORDER BY date desc;
+                    ";
+
+        $result2 = mysqli_query($con, $incomeExpMonth);
+        if(!$result2) {
+            die(mysqli_error($con));
+        }
+        else {
+            while($row = mysqli_fetch_assoc($result2)) {
+                $labelsInc[] = $row['Day'];
+                $valuesInc[] = (float)$row['total'];//Correct
+            }}
+        break;
+
+    case 'yearly':
+        //1. Query based on yearly type, draw a line chart
+        $queryExpYear = "SELECT MONTH(date) AS Month, SUM(amount) AS total
+                        FROM  transaction
+                        WHERE user_id = $userId
+                        AND type = 'expense'
+                        AND date BETWEEN '$startDate' AND '$endDate'
+                        GROUP BY Month
+                        ORDER BY date;
+                    ";
+
+        $result1 = mysqli_query($con, $queryExpYear);
+        if(!$result1) {
+            die(mysqli_error($con));
+        }
+        else {
+            while($row = mysqli_fetch_assoc($result1)) {
+                $labelsExp[] = $row['Month'];
+                $valuesExp[] = (float)$row['total'];//Correct
+            }}
+
+        $incomeExpYear = "SELECT MONTH(date) AS Month, SUM(amount) AS total
+                        FROM  transaction
+                        WHERE user_id = $userId
+                        AND type = 'income'
+                        AND date BETWEEN '$startDate' AND '$endDate'
+                        GROUP BY Month
+                        ORDER BY date;
+                    ";
+
+        $result2 = mysqli_query($con, $incomeExpYear);
+        if(!$result2) {
+            die(mysqli_error($con));
+        }
+        else {
+            while($row = mysqli_fetch_assoc($result2)) {
+                $labelsInc[] = $row['Month'];
+                $valuesInc[] = (float)$row['total'];//Correct
+            }}
+        break;
+
+    default: //Follow yearly 
         //1. Query based on yearly type, draw a line chart
         $queryExpYear = "SELECT MONTH(date) AS Month, SUM(amount) AS total
                         FROM  transaction
@@ -228,7 +312,8 @@ $userId = $_SESSION['user_id'];
             while($row = mysqli_fetch_assoc($result2)) {
                 $labelsInc[] = $row['Month'];
                 $valuesInc[] = (float)$row['total'];//Correct
-            }}        
+            }}
+}        
         ?>
     </div>
 
@@ -238,32 +323,49 @@ $userId = $_SESSION['user_id'];
         let valExp = <?php echo json_encode($valuesExp) ?>;
         let lbsInc = <?php echo json_encode($labelsInc) ?>;
         let valInc = <?php echo json_encode($valuesInc) ?>;
-        console.log(lbsExp);
-        console.log(valExp);
-        console.log(lbsInc);
-        console.log(valInc);
 
+        // Combine all unique days
+        let combineDay = [...lbsExp, ...lbsInc];
+        const setUniqueDay = new Set(combineDay);
+        const uniqueDay = [...setUniqueDay];
+
+        // Ensure consistency
+        let filledValExp = uniqueDay.map(day => {
+            let index = lbsExp.indexOf(day);
+            return index !== -1 ? valExp[index] : 0;
+        });
+
+        let filledValInc = uniqueDay.map(day => {
+            let index = lbsInc.indexOf(day);
+            return index !== -1 ? valInc[index] : 0;
+        })
+
+        console.log(uniqueDay);
+        console.log(filledValExp);
+        console.log(filledValInc);
         //Month name
         const MONTHS = [
            'January', 'February', 'March', 'April', 'May', 'June','July', 'August', 'September', 'October', 'November', 'December' 
         ];
         //Convert month from number to text
-        lbsExp = lbsExp.map(num => MONTHS[num - 1]);
+        <?php if($view == 'yearly'){ ?>
+            uniqueDay = uniqueDay.map(num => MONTHS[num - 1]);
+        <?php }?>
 
         //Define parameters for line chart
         const data = {
-            labels: lbsExp,
+            labels: uniqueDay,
             datasets: [
                 {
                     label: 'Expenses',
-                    data: valExp,
-                    borderCOlor: 'rgb(246, 167, 167)',
+                    data: filledValExp,
+                    borderColor: 'rgb(246, 167, 167)',
                     backgroundColor: 'rgb(246, 167, 167)',
                 },
                 {
                     label: 'Income',
-                    data: valInc,
-                    borderCOlor: 'rgb(167, 246, 209)',
+                    data: filledValInc,
+                    borderColor: 'rgb(167, 246, 209)',
                     backgroundColor: 'rgb(167, 246, 209)',
                 }
             ]
