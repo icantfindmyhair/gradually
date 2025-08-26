@@ -208,18 +208,15 @@ $percentage = $total > 0 ? round(($completed / $total) * 100) : 0;
 
 <div class="overview">
   <h2>Habit Overview</h2>
-  <div class="chart-row">
-    <div class="chart-container">
+  <div style="display: flex; gap: 20px; justify-content: center;">
+    <div style="width: 150px; height: 150px;">
       <canvas id="habitChart1"></canvas>
-      <p id="habitText1"></p>
     </div>
-    <div class="chart-container">
+    <div style="width: 150px; height: 150px;">
       <canvas id="habitChart2"></canvas>
-      <p id="habitText2"></p>
     </div>
-    <div class="chart-container">
+    <div style="width: 150px; height: 150px;">
       <canvas id="habitChart3"></canvas>
-      <p id="habitText3"></p>
     </div>
   </div>
 </div>
