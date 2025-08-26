@@ -39,19 +39,28 @@ require 'database.php';
 
     <?php
     date_default_timezone_set('Asia/Kuala_Lumpur');
-$today_day = strtolower(date('l'));
 $today_date = date('Y-m-d');
+$today_day = strtolower(date('l', strtotime($today_date)));
 $user_id = $_SESSION['user_id'];
-$sql = 'SELECT h.habit_id, h.habit_name, h.description, 
-               COALESCE(l.status, 0) AS status
+
+$sql = '
+        SELECT h.habit_id, h.habit_name, h.description,
+              COALESCE(l.status, 0) AS status
         FROM habit_type h
         LEFT JOIN habit_log l 
-               ON h.habit_id = l.habit_id AND l.date = ?
-        WHERE h.user_id = ?';
-$stmt = mysqli_prepare($con, $sql);
-mysqli_stmt_bind_param($stmt, 'si', $today_date, $user_id);
-mysqli_stmt_execute($stmt);
-$result = mysqli_stmt_get_result($stmt);
+              ON h.habit_id = l.habit_id AND l.date = ?
+        LEFT JOIN habit_repeat r 
+              ON h.habit_id = r.habit_id
+        WHERE h.user_id = ?
+          AND (
+              r.day_of_week = ?         -- habit repeats on this weekday
+              OR r.day_of_week IS NULL  -- no repeat rules, so default = every day
+          )
+    ';
+$stmt = $con->prepare($sql);
+$stmt->bind_param('sis', $today_date, $user_id, $today_day);
+$stmt->execute();
+$result = $stmt->get_result();
 
 if (mysqli_num_rows($result) === 0) {
     echo 'No habits planned for today.';
@@ -77,7 +86,6 @@ while ($row = mysqli_fetch_assoc($result)) {
     echo '</li>';
 }
 echo '</ul>';
-// todo: let user edit habit
 ?>
         </div>
 
@@ -97,7 +105,7 @@ echo '</ul>';
                        <label for="remarks" class="field-label">Remarks:</label>
                        <input type="text" id="remarks" name="remarks"><br>
 
-                       <label class="field-label">Repeat:</label>
+                       <label class="field-label">Repeat: (Default repeats everyday)</label>
                        <ul class="repeat-list">
                            <li>
                                <label class="repeat-row">
