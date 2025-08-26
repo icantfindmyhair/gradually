@@ -1,0 +1,52 @@
+.top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 60px;
+    background-color: transparent;
+    position: relative;
+}
+
+.hamburger {
+    position: absolute;
+    left: 20px;
+    font-size: 30px;
+    cursor: pointer;
+    background: none;
+    border: none;
+}
+
+.logout-btn {
+    position: absolute;
+    right: 20px;
+    text-decoration: none;
+    background-color: #2B3C48ff;
+    color: #D4DEDDff;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+a.logout-btn,
+a.logout-btn:visited,
+a.logout-btn:hover,
+a.logout-btn:active {
+    text-decoration: none;
+}
+
+.top-bar .title {
+    text-align: center;
+    text-decoration: none;
+    font-family: 'Agbalumo', cursive;
+    font-size: 30px;
+    color: #2B3C48ff;
+}
+
+a.title,
+a.title:visited,
+a.title:hover,
+a.title:active {
+    text-decoration: none;
+}
