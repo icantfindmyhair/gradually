@@ -115,10 +115,10 @@ echo '</ul>';
                    <form action="addHabit.php" method="POST" id="habit-form">
                        <input type="hidden" id="habit_id" name="habit_id">
 
-                       <label for="habit" class="field-label">Habit Name:</label>
+                       <label for="habit" class="field-label">Habit Name: (Required)</label>
                        <input type="text" id="habit" name="habit" required><br>
 
-                       <label for="remarks" class="field-label">Remarks:</label>
+                       <label for="remarks" class="field-label">Remarks: (Optional)</label>
                        <input type="text" id="remarks" name="remarks"><br>
 
                        <label class="field-label">Repeat: (Default repeats everyday)</label>
