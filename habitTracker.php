@@ -261,6 +261,7 @@ $percentage = $total > 0 ? round(($completed / $total) * 100) : 0;
       <canvas id="habitChart3"></canvas>
     </div>
   </div>
+  <div id="graphContainer"></div>
 </div>
 
     </div>
@@ -273,6 +274,7 @@ $percentage = $total > 0 ? round(($completed / $total) * 100) : 0;
 <script src="habitLog.js"></script>
 <script src="motivationalQuotes.js"></script>
 <script src="habitListAll.js"></script>
+<script src="habitGraph.js"></script>
 <script src="chart.js"></script>
 
 </html>
