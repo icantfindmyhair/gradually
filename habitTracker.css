@@ -76,16 +76,8 @@ a.title:active {
 }
 
 .todo-list {
-  font-family: 'Zen Maru Gothic', sans-serif;
-  border: 3px solid #2B3C48ff;
-  border-radius: 12px;
-  margin: 15px;
-  padding: 20px;
-  background-color: #ffffff80;
-
   display: flex;
   flex-direction: column;
-  height: 100%;
 }
 
 .todo-header {
@@ -104,6 +96,7 @@ a.title:active {
   border: none;
   border-radius: 5px;
   padding: 5px 10px;
+  margin-top: 0px;
   margin-bottom: 10px;
   font-size: 15px;
   cursor: pointer;
@@ -438,3 +431,35 @@ form input[type="text"]:focus {
 .close:hover {
   color: #000;
 }
+
+/* ------------------------- GRAPH ------------------------- */
+.heatmap.habits {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.habit-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.habit-name {
+  min-width: 100px;
+  max-width: 150px;
+  font-size: 12px;
+  text-align: right;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cell {
+  width: 100%;
+  aspect-ratio: 1 / 1; 
+  border-radius: 3px;
+}
+
+.cell.done { background: #2B3C48ff; }
+.cell.miss { background: #E0E0E0; }
