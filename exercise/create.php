@@ -14,6 +14,14 @@ csrf_generate();
 </head>
 <body>
     <h1>Add New Exercise</h1>
+
+    <?php if (!empty($_SESSION['flash'])): ?>
+        <div class="toast <?= $_SESSION['flash']['type'] ?>">
+            <?= htmlspecialchars($_SESSION['flash']['text']) ?>
+        </div>
+        <?php unset($_SESSION['flash']); ?>
+    <?php endif; ?>
+
     <form action="store.php" method="POST">
         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']); ?>">
 
@@ -21,19 +29,20 @@ csrf_generate();
         <input type="text" name="exercise_type" required><br>
 
         <label>Duration (minutes):</label>
-        <input type="number" name="duration_min" min="1" required><br>
+        <input type="number" name="duration_minutes" min="1" required><br>
 
-        <label>Calories Burned:</label>
-        <input type="number" step="0.01" name="calories_burned" min="0" required><br>
+        <label>Calories Burnt:</label>
+        <input type="number" step="0.01" name="calories_burnt" min="0" required><br>
 
         <label>Date:</label>
-        <input type="date" name="date" required><br>
+        <input type="date" name="exercise_date" required><br>
 
         <label>Notes:</label>
         <textarea name="notes"></textarea><br>
 
         <button type="submit">Save</button>
     </form>
+
     <a href="index.php">Back to List</a>
 </body>
 </html>

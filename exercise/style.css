@@ -11,41 +11,41 @@
   --border: #223055;
   --chip: #1a2447;
   --table-stripe: #0d1330;
-
-  --header-text: #ffffff; 
 }
 
+/* Apply background image and colors to light theme */
 .light {
-  background-image: url('light.jpg');
+  background-image: url('light.jpg'); /* Make sure light.jpg is in the same folder */
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  color: var(--text); 
+  color: var(--text);
 }
 
 .light {
-  --bg: #e6f0ff;        
-  --panel: #ffffff;     
-  --panel-2: #f0f6ff;  
-  --text: #0a2540;      
-  --muted: #64748b;     
-  --brand: #2563eb;    
-  --brand-2: #3b82f6;  
-  --ok: #1d4ed8;        
-  --err: #dc2626;       
-  --border: #cbd5e1;    
-  --chip: #dbeafe;      
-  --table-stripe: #eff6ff; 
-
-  /* Header title/subtitle color in light theme */
-  --header-text: #000000; 
+  --bg: #e6f0ff;        /* very light blue background */
+  --panel: #ffffff;      /* white panels for contrast */
+  --panel-2: #f0f6ff;    /* softer light blue panel */
+  --text: #0a2540;       /* dark text in light mode */
+  --muted: #64748b;      /* muted gray-blue */
+  --brand: #2563eb;      /* primary blue */
+  --brand-2: #3b82f6;    /* secondary bright blue */
+  --ok: #1d4ed8;         /* deep blue-green for success */
+  --err: #dc2626;        /* keep red for errors */
+  --border: #cbd5e1;     /* light blue-gray border */
+  --chip: #dbeafe;       /* light sky-blue chip */
+  --table-stripe: #eff6ff; /* pale blue table stripe */
 }
 
-/* APPLY HEADER COLOR  */
-header .title,
-header .subtitle {
-  color: var(--header-text); 
+.hamburger {
+    position: absolute;
+    left: 20px;
+    font-size: 30px;
+    cursor: pointer;
+    background: none;
+    border: none;
 }
+
 
 * {
   box-sizing: border-box;
@@ -57,7 +57,7 @@ body {
   padding: 0;
   font-family: "Coiny", system-ui, sans-serif;
   background: var(--bg);
-  color: var(--text);
+  color: var(--text); /* Will change automatically based on theme */
 }
 
 a {
@@ -70,9 +70,10 @@ a {
   padding: 24px;
 }
 
+/* ---------- HEADER ---------- */
 header {
   background: linear-gradient(135deg, var(--brand) 0%, var(--brand-2) 100%);
-  color: white;
+  color: var(--text);
   border-radius: 20px;
   padding: 28px 24px;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
@@ -86,6 +87,7 @@ header .title {
   font-weight: 700;
   letter-spacing: 0.2px;
   margin: 0 0 6px;
+  color: var(--text);
 }
 
 header .subtitle {
@@ -93,8 +95,10 @@ header .subtitle {
   opacity: 0.95;
   margin: 0;
   font-size: 14px;
+  color: var(--text);
 }
 
+/* ---------- GRID ---------- */
 .grid {
   display: grid;
   gap: 16px;
@@ -109,11 +113,13 @@ header .subtitle {
   }
 }
 
+/* ---------- CARD ---------- */
 .card {
   background: var(--panel);
   border: 1px solid var(--border);
   border-radius: 16px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  color: var(--text);
 }
 
 .card-body {
@@ -133,6 +139,7 @@ header .subtitle {
   color: var(--muted);
 }
 
+/* ---------- FORM ---------- */
 .form-grid {
   display: grid;
   gap: 12px;
@@ -217,6 +224,7 @@ textarea {
   flex-wrap: wrap;
 }
 
+/* ---------- STATS ---------- */
 .stats {
   display: grid;
   gap: 12px;
@@ -233,6 +241,7 @@ textarea {
   border: 1px solid var(--border);
   border-radius: 16px;
   padding: 14px;
+  color: var(--text);
 }
 
 .stat .label {
@@ -246,6 +255,7 @@ textarea {
   font-size: 24px;
   font-weight: 700;
   margin-top: 6px;
+  color: var(--text);
 }
 
 .chip {
@@ -258,6 +268,7 @@ textarea {
   color: var(--text);
 }
 
+/* ---------- TABLE ---------- */
 .table-wrap {
   overflow: auto;
   border-radius: 14px;
@@ -269,6 +280,7 @@ table {
   border-collapse: separate;
   border-spacing: 0;
   background: var(--panel);
+  color: var(--text);
 }
 
 th,
@@ -278,6 +290,7 @@ td {
   text-align: left;
   border-bottom: 1px solid var(--border);
   font-size: 14px;
+  color: var(--text);
 }
 
 th {
@@ -302,6 +315,7 @@ tr:nth-child(even) {
   flex-wrap: wrap;
 }
 
+/* ---------- TOAST ---------- */
 .toast {
   font-family: "Coiny", system-ui, sans-serif;
   position: fixed;
@@ -325,17 +339,20 @@ tr:nth-child(even) {
   background: linear-gradient(135deg, #ef4444, #f97316);
 }
 
+/* ---------- TOPBAR ---------- */
 .topbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin: 14px 0;
+  color: var(--text);
 }
 
 .brand-mini {
   font-family: "Agbalumo", cursive;
   font-weight: 700;
   letter-spacing: 0.3px;
+  color: var(--text);
 }
 
 .toggle {
@@ -345,6 +362,7 @@ tr:nth-child(even) {
   padding: 6px 10px;
   border-radius: 12px;
   cursor: pointer;
+  color: var(--text);
 }
 
 .notice {
@@ -357,5 +375,5 @@ tr:nth-child(even) {
   font-family: "Coiny", system-ui, sans-serif;
   display: flex;
   align-items: center;
-  gap: 6px; 
+  gap: 6px; /* space between username and logout button */
 }
