@@ -19,7 +19,7 @@ if (!$con) {
 $flash = null;
 
 // ---- Handle form submission for adding new exercise ----
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['exercise_type'])) {
     $exercise_type    = trim($_POST['exercise_type'] ?? '');
     $duration_minutes = (int)($_POST['duration_minutes'] ?? 0);
     $calories_burnt   = (int)($_POST['calories_burnt'] ?? 0);
@@ -36,6 +36,44 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $stmt->close();
     } catch (Exception $e) {
         $flash = ["type" => "error", "text" => "Error: " . htmlspecialchars($e->getMessage())];
+    }
+}
+
+// ---- Handle delete request ----
+if (isset($_POST['delete_id'])) {
+    $deleteId = (int)$_POST['delete_id'];
+    try {
+        $stmt = $con->prepare("DELETE FROM exercises WHERE exercise_id = ? AND user_id = ?");
+        $stmt->bind_param("ii", $deleteId, $_SESSION['user_id']);
+        $stmt->execute();
+        if ($stmt->affected_rows > 0) {
+            $flash = ["type" => "success", "text" => "Exercise record deleted successfully."];
+        } else {
+            $flash = ["type" => "error", "text" => "Failed to delete exercise record."];
+        }
+        $stmt->close();
+    } catch (Exception $e) {
+        $flash = ["type" => "error", "text" => "Error deleting: " . htmlspecialchars($e->getMessage())];
+    }
+}
+
+// ---- Handle update request ----
+if (isset($_POST['update_id'])) {
+    $updateId = (int)$_POST['update_id'];
+    $newDuration = (int)($_POST['duration_minutes'] ?? 0);
+    $newCalories = (int)($_POST['calories_burnt'] ?? 0);
+    try {
+        $stmt = $con->prepare("UPDATE exercises SET duration_minutes=?, calories_burnt=?, updated_at=NOW() WHERE exercise_id=? AND user_id=?");
+        $stmt->bind_param("iiii", $newDuration, $newCalories, $updateId, $_SESSION['user_id']);
+        $stmt->execute();
+        if ($stmt->affected_rows >= 0) {
+            $flash = ["type" => "success", "text" => "Exercise record updated successfully."];
+        } else {
+            $flash = ["type" => "error", "text" => "Failed to update exercise record."];
+        }
+        $stmt->close();
+    } catch (Exception $e) {
+        $flash = ["type" => "error", "text" => "Error updating: " . htmlspecialchars($e->getMessage())];
     }
 }
 
@@ -87,7 +125,6 @@ $params = [];
 $types = 'i';
 $params[] = &$_SESSION['user_id'];
 
-// Search by type or notes
 if ($search !== '') {
     $where[] = "(exercise_type LIKE ? OR notes LIKE ?)";
     $searchWildcard = "%$search%";
@@ -96,7 +133,6 @@ if ($search !== '') {
     $types .= 'ss';
 }
 
-// Date range
 if ($dateFrom !== '') {
     $where[] = "exercise_date >= ?";
     $params[] = &$dateFrom;
@@ -129,6 +165,8 @@ $result = $stmt->get_result();
 <title>Exercise Tracker — Student Routine Organizer</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Agbalumo&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Agbalumo&family=Jua&family=Zen+Maru+Gothic&display=swap">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -176,24 +214,32 @@ $result = $stmt->get_result();
                                 <th>Notes</th>
                                 <th>Created At</th>
                                 <th>Updated At</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
                         <?php if ($result && $result->num_rows > 0): ?>
                             <?php while ($row = $result->fetch_assoc()): ?>
-                                <tr>
+                                <tr data-id="<?= (int)$row['exercise_id'] ?>">
                                     <td><?= htmlspecialchars($row['exercise_id']) ?></td>
                                     <td><?= htmlspecialchars($row['exercise_type']) ?></td>
-                                    <td><?= (int)$row['duration_minutes'] ?></td>
-                                    <td><?= (int)$row['calories_burnt'] ?></td>
+                                    <td class="duration"><?= (int)$row['duration_minutes'] ?></td>
+                                    <td class="calories"><?= (int)$row['calories_burnt'] ?></td>
                                     <td><?= htmlspecialchars($row['exercise_date']) ?></td>
                                     <td><?= htmlspecialchars($row['notes']) ?></td>
                                     <td><?= htmlspecialchars($row['created_at']) ?></td>
                                     <td><?= htmlspecialchars($row['updated_at']) ?></td>
+                                    <td>
+                                        <button type="button" class="btn secondary editBtn">Edit</button>
+                                        <form method="POST" onsubmit="return confirm('Delete this record?');" style="display:inline">
+                                            <input type="hidden" name="delete_id" value="<?= (int)$row['exercise_id'] ?>">
+                                            <button type="submit" class="btn secondary">Delete</button>
+                                        </form>
+                                    </td>
                                 </tr>
                             <?php endwhile; ?>
                         <?php else: ?>
-                            <tr><td colspan="8">No records found</td></tr>
+                            <tr><td colspan="9">No records found</td></tr>
                         <?php endif; ?>
                         </tbody>
                     </table>
@@ -291,6 +337,85 @@ setTimeout(()=>{ const t=document.getElementById('toast'); if(t){ t.style.opacit
 <script>
 document.getElementById('clearFilters').addEventListener('click', function() {
     window.location.href = window.location.pathname;
+});
+
+// ---- Theme Toggle ----
+const modeToggle = document.getElementById("modeToggle");
+modeToggle?.addEventListener("click", () => {
+    document.body.classList.toggle("light");
+    if (document.body.classList.contains("light")) {
+        localStorage.setItem("theme", "light");
+    } else {
+        localStorage.setItem("theme", "dark");
+    }
+});
+window.addEventListener("DOMContentLoaded", () => {
+    const theme = localStorage.getItem("theme");
+    if (theme === "light") {
+        document.body.classList.add("light");
+    }
+});
+
+// ---- Export CSV ----
+const exportBtn = document.getElementById("exportCsvBtn");
+exportBtn?.addEventListener("click", () => {
+    const table = document.getElementById("recordsTable");
+    if (!table) return;
+
+    let csv = [];
+    for (let row of table.rows) {
+        let cols = [];
+        for (let cell of row.cells) {
+            cols.push('"' + cell.innerText.replace(/"/g, '""') + '"');
+        }
+        csv.push(cols.join(","));
+    }
+
+    const blob = new Blob([csv.join("\n")], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "exercise_records.csv";
+    a.click();
+    URL.revokeObjectURL(url);
+});
+
+// ---- Inline Edit ----
+document.querySelectorAll(".editBtn").forEach(btn => {
+    btn.addEventListener("click", function() {
+        const row = this.closest("tr");
+        const id = row.dataset.id;
+        const durationCell = row.querySelector(".duration");
+        const caloriesCell = row.querySelector(".calories");
+
+        if (this.innerText === "Edit") {
+            // Convert to inputs
+            const currentDuration = durationCell.innerText.trim();
+            const currentCalories = caloriesCell.innerText.trim();
+
+            durationCell.innerHTML = `<input type="number" name="duration_minutes" min="1" value="${currentDuration}" style="width:80px">`;
+            caloriesCell.innerHTML = `<input type="number" name="calories_burnt" min="0" value="${currentCalories}" style="width:80px">`;
+
+            this.innerText = "Save";
+        } else {
+            // Submit update
+            const newDuration = durationCell.querySelector("input").value;
+            const newCalories = caloriesCell.querySelector("input").value;
+
+            const form = document.createElement("form");
+            form.method = "POST";
+            form.style.display = "none";
+
+            form.innerHTML = `
+                <input type="hidden" name="update_id" value="${id}">
+                <input type="hidden" name="duration_minutes" value="${newDuration}">
+                <input type="hidden" name="calories_burnt" value="${newCalories}">
+            `;
+            document.body.appendChild(form);
+            form.submit();
+        }
+    });
 });
 </script>
 

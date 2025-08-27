@@ -69,7 +69,7 @@ updateClock();
 
     <!-- Grid of 4 squares -->
     <div class="grid-container">
-        <div class="card" onclick="location.href='https://example.com/1'">
+            <div class="card" onclick="location.href='exercise/index.php'">
             <img class="icon-placeholder" src="images/exercise.svg" alt="Exercise Tracker">
             <div class="card-title">Fitness Journey</div>
             <div class="card-subtitle">Exercise Tracker</div>
