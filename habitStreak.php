@@ -6,19 +6,29 @@ require 'database.php';
 $user_id = $_SESSION['user_id'];
 
 $sql = '
-    SELECT MAX(streak) as longest_streak
+    SELECT COALESCE(MAX(streak), 0) AS longest_streak
+FROM (
+  SELECT habit_id, streak
+  FROM (
+    SELECT
+      t.habit_id,
+      t.date,
+      @streak := IF(@prev_habit = t.habit_id AND DATEDIFF(t.date, @prev_date) = 1,
+                    @streak + 1, 1) AS streak,
+      @prev_date := t.date,
+      @prev_habit := t.habit_id
     FROM (
-        SELECT h.habit_id, MAX(s.streak) as streak
-        FROM habit_type h
-        LEFT JOIN (
-            SELECT habit_id, COUNT(*) as streak
-            FROM habit_log
-            WHERE status = 1
-            GROUP BY habit_id
-        ) s ON h.habit_id = s.habit_id
-        WHERE h.user_id = ?
-        GROUP BY h.habit_id
-    ) sub
+      SELECT l.habit_id, l.date
+      FROM habit_log l
+      JOIN habit_type h ON h.habit_id = l.habit_id
+      WHERE h.user_id = ?      -- bind this
+        AND l.status = 1
+      ORDER BY l.habit_id, l.date
+    ) t
+    CROSS JOIN (SELECT @prev_habit := NULL, @prev_date := NULL, @streak := 0) vars
+  ) s1
+) s2;
+
 ';
 
 $stmt = $con->prepare($sql);
