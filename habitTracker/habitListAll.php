@@ -1,6 +1,7 @@
 <?php
 
-include 'database.php';
+define('ROOT_PATH', dirname(__DIR__));
+require ROOT_PATH.'/database.php';
 
 $sql = 'SELECT * FROM habit_type ORDER BY habit_name ASC';
 $result = mysqli_query($con, $sql);

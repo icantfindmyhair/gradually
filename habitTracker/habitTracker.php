@@ -3,7 +3,8 @@
 
 <?php
 session_start();
-require 'database.php';
+define('ROOT_PATH', dirname(__DIR__));
+require ROOT_PATH.'/database.php';
 ?>
 <head>
     <meta charset="UTF-8">
@@ -16,9 +17,9 @@ require 'database.php';
 
     <link rel="stylesheet" href="habitTracker.css">
 
-    <link rel="stylesheet" href="hamburger.css">
-    <?php include 'hamburger.php'; ?>
-    <script src="hamburger.js"></script>
+    <link rel="stylesheet" href="../hamburger.css">
+    <?php include ROOT_PATH.'/hamburger.php'; ?>
+    <script src="../hamburger.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 </head>
@@ -26,7 +27,7 @@ require 'database.php';
 <body>
     <div class="top-bar">
         <button class="hamburger">&#9776;</button>
-        <a href="homepage.php" class="title">Gradually</a>
+        <a href="../homepage.php" class="title">Gradually</a>
         <a href="logout.php" class="logout-btn">Log out</a>
     </div>
 

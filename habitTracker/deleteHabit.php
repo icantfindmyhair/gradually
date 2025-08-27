@@ -1,6 +1,7 @@
 <?php
 
-include 'database.php';
+define('ROOT_PATH', dirname(__DIR__));
+require ROOT_PATH.'/database.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['habit_id'])) {
     $habitId = intval($_POST['habit_id']);

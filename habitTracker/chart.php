@@ -1,7 +1,8 @@
 <?php
 
 session_start();
-require 'database.php';
+define('ROOT_PATH', dirname(__DIR__));
+require ROOT_PATH.'/database.php';
 header('Content-Type: application/json');
 date_default_timezone_set('Asia/Kuala_Lumpur');
 

@@ -1,7 +1,8 @@
 <?php
 
 session_start();
-require 'database.php';
+define('ROOT_PATH', dirname(__DIR__));
+require ROOT_PATH.'/database.php';
 
 $habitId = intval($_GET['habit_id']);
 $userId = $_SESSION['user_id'];
