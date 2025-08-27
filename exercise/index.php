@@ -30,7 +30,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['exercise_type'])) {
         $stmt = $con->prepare("INSERT INTO exercises 
             (user_id, exercise_type, duration_minutes, calories_burnt, exercise_date, notes, created_at, updated_at) 
             VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW())");
-        $stmt->bind_param("isiiis", $_SESSION['user_id'], $exercise_type, $duration_minutes, $calories_burnt, $exercise_date, $notes);
+        $stmt->bind_param("isisss", $_SESSION['user_id'], $exercise_type, $duration_minutes, $calories_burnt, $exercise_date, $notes);
         $stmt->execute();
         $flash = ["type" => "success", "text" => "New exercise record created successfully."];
         $stmt->close();
@@ -168,8 +168,18 @@ $result = $stmt->get_result();
     <link href="https://fonts.googleapis.com/css2?family=Agbalumo&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Agbalumo&family=Jua&family=Zen+Maru+Gothic&display=swap">
 <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="../hamburger.css">
+  <?php 
+        define('BASE_PATH', dirname(__DIR__));
+        include BASE_PATH . '/hamburger.php'; ?>
+        <script src="../hamburger.js"></script>
 </head>
 <body>
+<!--Hamburger-->
+ <div class="hamburger">
+        <button class="hamburger">&#9776;</button>
+ </div>
+
 <div class="container">
     <div class="topbar">
         <div class="brand-mini">Student Routine Organizer · <span class="muted">Exercise Tracker</span></div>
