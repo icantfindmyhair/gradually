@@ -5,5 +5,5 @@
     <a href="/gradually/habitTracker.php">Habit Tracker</a>
     <a href="/gradually/diaryJournal/viewCalendar.php">Diary Journal</a>
     <a href="/gradually/moneyDashboard.php">Money Tracker</a>
-    <a href="#">Exercise Tracker</a>
+    <a href="/gradually/exercise/index.php">Exercise Tracker</a>
 </div>
