@@ -16,23 +16,28 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function renderHabitGraph() {
-        let html = `<h3>Streaks for The Past ${defaultDays} Days</h3>`;
+        let html = `<h3 style="margin-top: 2rem; text-align: center; font-size: 22px;">Streaks for The Past ${defaultDays} Days</h3>`;
 
-        html += `<div class="habit-row" style="margin-bottom:4px; align-items:center;">`;
+        html += `<div class="habit-row" style="margin-top: 1rem; align-items:center;">`;
         html += `<span class="habit-name" style="width:100px;"></span>`;
         html += `<div style="
             display: grid;
-            grid-template-columns: repeat(${dates.length}, 20px);
+            grid-template-columns: repeat(${dates.length}, 30px);
             gap: 6px;
             flex:1;
         ">`;
-        dates.forEach(date => {
-            html += `<span style="
-                font-size:10px;
-                text-align:center;
-                display:block;
-            ">${date.slice(5)}</span>`;
-        });
+
+    dates.forEach(dateStr => {
+        const dateObj = new Date(dateStr);
+        const day = dateObj.getDate();
+        const month = dateObj.toLocaleString('default', { month: 'short' });
+        html += `<span style="
+            font-size:15px;
+            text-align:center;
+            display:block;
+        ">${day} ${month}</span>`;
+    });
+
         html += `</div></div>`;
 
         html += `<div class="heatmap habits">`;
@@ -41,7 +46,7 @@ document.addEventListener("DOMContentLoaded", function () {
             html += `<span class="habit-name" style="width:100px;">${habit.name}</span>`;
             html += `<div style="
                 display: grid;
-                grid-template-columns: repeat(${dates.length}, 20px);
+                grid-template-columns: repeat(${dates.length}, 30px);
                 gap: 6px;
                 flex:1;
             ">`;

@@ -432,7 +432,7 @@ form input[type="text"]:focus {
   color: #000;
 }
 
-/* ------------------------- HEAT MAP ------------------------- */
+/* ------------------------- GRAPH ------------------------- */
 .heatmap.habits {
   display: flex;
   flex-direction: column;

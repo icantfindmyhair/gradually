@@ -218,7 +218,7 @@ $percentage = $total > 0 ? round(($completed / $total) * 100) : 0;
 
 
 <div class="overview">
-  <h2>Habit Overview</h2>
+  <h1>Habit Overview</h1>
 <div id="quoteBox" style="
     background-color: #ffffff80;
     border-top: 2px solid #2B3C48ff;
