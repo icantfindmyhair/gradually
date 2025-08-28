@@ -1,5 +1,6 @@
 <?php
 
+// to list all habits when user want to view all habit
 define('ROOT_PATH', dirname(__DIR__));
 require ROOT_PATH.'/database.php';
 

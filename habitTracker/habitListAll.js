@@ -1,10 +1,26 @@
 document.getElementById("viewHabitsBtn").addEventListener("click", function() {
-  document.getElementById("habitModal").style.display = "block";
+  const modal = document.getElementById("habitModal");
+  const container = document.getElementById("allHabitsContainer");
+
+  modal.style.display = "block";
 
   fetch("habitListAll.php")
-    .then(response => response.text())
+    .then(response => {
+      if (!response.ok) {
+        console.error("Server error:", response.status, response.statusText);
+        throw new Error("Failed to load habits from server.");
+      }
+      return response.text();
+    })
     .then(html => {
-      document.getElementById("allHabitsContainer").innerHTML = html;
+      if (!html || html.trim() === "") {
+        throw new Error("Empty response received from server.");
+      }
+      container.innerHTML = html;
+    })
+    .catch(error => {
+      console.error("Error fetching habit list:", error);
+      container.innerHTML = "<p style='color:red;'>⚠ Unable to load habits. Please try again later.</p>";
     });
 });
 
@@ -13,7 +29,8 @@ document.querySelector(".close").addEventListener("click", function() {
 });
 
 window.onclick = function(event) {
-  if (event.target === document.getElementById("habitModal")) {
-    document.getElementById("habitModal").style.display = "none";
+  const modal = document.getElementById("habitModal");
+  if (event.target === modal) {
+    modal.style.display = "none";
   }
 };

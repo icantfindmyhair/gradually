@@ -1,5 +1,6 @@
 <?php
 
+// add habit and update habit
 session_start();
 define('ROOT_PATH', dirname(__DIR__));
 require ROOT_PATH.'/database.php';
@@ -7,7 +8,7 @@ require ROOT_PATH.'/database.php';
 date_default_timezone_set('Asia/Kuala_Lumpur');
 
 if (!isset($_SESSION['user_id'])) {
-    header('Location: login.php');
+    header('Location: ../login.php');
     exit;
 }
 

@@ -1,5 +1,7 @@
 <?php
 
+// to retrieve habit from database
+
 session_start();
 define('ROOT_PATH', dirname(__DIR__));
 require ROOT_PATH.'/database.php';

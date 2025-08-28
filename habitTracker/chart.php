@@ -1,5 +1,6 @@
 <?php
 
+// donut chart for today, this week, and this month
 session_start();
 define('ROOT_PATH', dirname(__DIR__));
 require ROOT_PATH.'/database.php';

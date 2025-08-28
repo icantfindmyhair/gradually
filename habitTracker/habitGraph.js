@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function () {
       const dateObj = new Date(dateStr + 'T00:00:00');
       const day = dateObj.getDate();
       const mon = dateObj.toLocaleString(undefined, { month: 'short' });
-      html += `<span style="font-size:12px; text-align:center; display:block;">${day} ${mon}</span>`;
+      html += `<span style="font-size:13px; text-align:center; display:block;">${day} ${mon}</span>`;
     });
     html += `</div></div>`;
 

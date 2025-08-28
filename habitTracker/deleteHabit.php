@@ -1,5 +1,6 @@
 <?php
 
+// handling habit deletion
 define('ROOT_PATH', dirname(__DIR__));
 require ROOT_PATH.'/database.php';
 

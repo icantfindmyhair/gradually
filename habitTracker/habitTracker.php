@@ -5,6 +5,10 @@
 session_start();
 define('ROOT_PATH', dirname(__DIR__));
 require ROOT_PATH.'/database.php';
+if (!isset($_SESSION['user_id'])) {
+    header('Location: ../login.php');
+    exit;
+}
 ?>
 <head>
     <meta charset="UTF-8">
@@ -54,7 +58,6 @@ require ROOT_PATH.'/database.php';
 $today_date = date('Y-m-d');
 $today_day = strtolower(date('l', strtotime($today_date)));
 $user_id = $_SESSION['user_id'];
-
 $sql = '
     SELECT h.habit_id, h.habit_name, h.description,
           COALESCE(l.status, 0) AS status
@@ -232,8 +235,8 @@ $percentage = $total > 0 ? round(($completed / $total) * 100) : 0;
     font-family: 'Zen Maru Gothic', sans-serif;
     text-align: center;
 ">
-  <div style="font-weight: bold; font-size: 18px; margin-bottom: 5px;">
-    Current Longest Streak
+  <div id='habitStreak' style="font-weight: bold; font-size: 18px; margin-bottom: 5px;">
+    Current Longest Habit Streak
   </div>
   <div id="streakNumber" style="
       font-size: 32px;

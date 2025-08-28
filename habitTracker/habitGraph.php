@@ -1,5 +1,7 @@
 <?php
 
+// to get the grid graph of user's habit record for the past 30 days
+
 session_start();
 define('ROOT_PATH', dirname(__DIR__));
 require ROOT_PATH.'/database.php';
