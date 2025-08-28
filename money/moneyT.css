@@ -1,6 +1,6 @@
 body {
     display: flex;
-    background: url("images/moneybg.jpg");
+    background: url("../images/moneybg.jpg");
     flex-direction: column;
     height: 100vh;
     margin: 0;

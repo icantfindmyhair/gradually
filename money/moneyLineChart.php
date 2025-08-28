@@ -2,8 +2,9 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-include("auth.php");
-require("database.php");
+include("../auth.php");
+define('ROOT_PATH', dirname(__DIR__));
+require ROOT_PATH.'/database.php';;
 
 //Based on month query
 $labelsExp = [];
@@ -102,8 +103,8 @@ $userId = $_SESSION['user_id'];
         <title>Money Tracker</title>
 
         <!--Bootstrap-->
-        <link rel="stylesheet" href="hamburger.css">
-        <link rel="stylesheet" href="header.css">
+        <link rel="stylesheet" href="../hamburger.css">
+        <link rel="stylesheet" href="../header.css">
         <link rel="stylesheet" href="moneyL.css">
 
         <!--Chart.js-->
@@ -118,8 +119,8 @@ $userId = $_SESSION['user_id'];
         <link href="https://fonts.googleapis.com/css2?family=Agbalumo&display=swap" rel="stylesheet">
         
         <!--Sidebar-->    
-        <?php include 'hamburger.php'; ?>
-        <script src="hamburger.js"></script>
+        <?php include ROOT_PATH.'/hamburger.php'; ?>
+        <script src="../hamburger.js"></script>
         
         <!--Font-->
         <link rel="preconnect" href="https://fonts.googleapis.com">

@@ -2,8 +2,9 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-include("auth.php");
-require("database.php");
+include("../auth.php");
+define('ROOT_PATH', dirname(__DIR__));
+require ROOT_PATH.'/database.php';
 
 //Based on month query
 $labels = [];
@@ -108,8 +109,8 @@ if (isset($_GET['trans_id']) && ctype_digit($_GET['trans_id'])): ?>
         <title>Money Tracker</title>
 
         <!--Bootstrap-->
-        <link rel="stylesheet" href="hamburger.css">
-        <link rel="stylesheet" href="header.css">
+        <link rel="stylesheet" href="../hamburger.css">
+        <link rel="stylesheet" href="../header.css">
         <link rel="stylesheet" href="moneyD.css">
 
         <!--Chart.js-->
@@ -123,8 +124,8 @@ if (isset($_GET['trans_id']) && ctype_digit($_GET['trans_id'])): ?>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
         
         <!--Sidebar-->    
-        <?php include 'hamburger.php'; ?>
-        <script src="hamburger.js"></script>
+        <?php include ROOT_PATH.'/hamburger.php'; ?>
+        <script src="../hamburger.js"></script>
         
         <!--Font-->
         <link rel="preconnect" href="https://fonts.googleapis.com">

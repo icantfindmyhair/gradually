@@ -4,6 +4,6 @@
     <a href="/gradually/homepage.php">Home</a>
     <a href="/gradually/habitTracker/habitTracker.php">Habit Tracker</a>
     <a href="/gradually/diaryJournal/viewCalendar.php">Diary Journal</a>
-    <a href="/gradually/moneyDashboard.php">Money Tracker</a>
+    <a href="/gradually/money/moneyDashboard.php">Money Tracker</a>
     <a href="/gradually/exercise/index.php">Exercise Tracker</a>
 </div>

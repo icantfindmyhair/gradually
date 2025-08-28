@@ -1,6 +1,8 @@
 <?php 
-include("auth.php");
-require("database.php");
+include("../auth.php");
+
+define('ROOT_PATH', dirname(__DIR__));
+require ROOT_PATH.'/database.php';
 
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
@@ -50,15 +52,14 @@ if(isset($_POST['new_trans']) && $_POST['new_trans'] == 1){
         <link href="https://fonts.googleapis.com/css2?family=Agbalumo&family=Jua&family=Zen+Maru+Gothic&display=swap" rel="stylesheet">
 
         <!--Custom CSS-->
-        <link rel="stylesheet" href="hamburger.css">    
-        <link rel="stylesheet" href="header.css">
+        <link rel="stylesheet" href="../hamburger.css">    
+        <link rel="stylesheet" href="../header.css">
         <link rel="stylesheet" href="moneyT.css">
 
-        <!--Sidebar-->
-        <?php include 'hamburger.php'; ?>
+        <!--Sidebar-->    
+        <?php include ROOT_PATH.'/hamburger.php'; ?>
+        <script src="../hamburger.js"></script>
 
-        <!--Script for side bar-->
-        <script src="hamburger.js"></script>
     </head>
     
     <body>
