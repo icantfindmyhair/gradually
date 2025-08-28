@@ -93,7 +93,7 @@ while ($row = mysqli_fetch_assoc($result)) {
     echo '<li'.$completedClass.'>';
     echo '<div class="habit-left">';
     echo '<input type="checkbox" class="habit-checkbox" data-habitid="'.$row['habit_id'].'" id="habit'.$row['habit_id'].'" '.$checked.'>';
-    echo '<label for="habit'.$row['habit_id'].'">'.htmlspecialchars($row['habit_name']).'</label>';
+    echo '<label for="habit'.$row['habit_id'].'">'.htmlspecialchars($row['habit_name']).'<br><span style="font-size: 0.9em; color: #555;">'.htmlspecialchars($row['description']).'</span></label>';
     echo '</div>';
 
     echo '<div class="habit-menu">';
