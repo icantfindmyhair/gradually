@@ -20,9 +20,9 @@
 
 
         <!--Sidebar-->
-        <?php 
+        <?php
         define('BASE_PATH', dirname(__DIR__));
-        include BASE_PATH . '/hamburger.php'; ?>
+        include BASE_PATH.'/hamburger.php'; ?>
         <script src="../hamburger.js"></script>
 
         <!--Script-->
@@ -37,14 +37,14 @@
             <!--Header-->
             <div class="top-bar">
                 <button class="hamburger">&#9776;</button>
-                <a href="homepage.php" class="title">Gradually</a>
-                <a href="logout.php" class="logout-btn">Log out</a>
+                <a href="../homepage.php" class="title">Gradually</a>
+                <a href="../logout.php" class="logout-btn">Log out</a>
             </div>
             <!--End of Header-->
 
             <!--Start of Hero Section (Top)-->
             <div class="top-hero">
-                <h2 class="hero-salutation"><span id="greeting"></span>, <?= $username_value ?></h2>
+                <h2 class="hero-salutation"><span id="greeting"></span>, <?php echo $username_value; ?></h2>
                 <h1 class="hero-heading">Welcome to personal Diary & Journal corner</h1>
                 <h3 class="hero-subheading">This is your journal - your thoughts, your voice, your space.</h3>
             </div>
