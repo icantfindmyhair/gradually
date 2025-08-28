@@ -133,8 +133,8 @@ $userId = $_SESSION['user_id'];
         <!--Header-->
         <div class="top-bar">
             <button class="hamburger">&#9776;</button>
-            <a href="homepage.php" class="title">Gradually</a>
-            <a href="logout.php" class="logout-btn">Log out</a>
+            <a href="../homepage.php" class="title">Gradually</a>
+            <a href="../logout.php" class="logout-btn">Log out</a>
         </div>
         <!--End of header-->
 

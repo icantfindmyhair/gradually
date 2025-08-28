@@ -66,8 +66,8 @@ if(isset($_POST['new_trans']) && $_POST['new_trans'] == 1){
         <!--Header-->
         <div class="top-bar">
             <button class="hamburger" style="color: #ffffff;">&#9776;</button>
-            <a href="homepage.php" style="color: #ffffff;" class="title">Gradually</a>
-            <a href="logout.php" class="logout-btn">Log out</a>
+            <a href="../homepage.php" style="color: #ffffff;" class="title">Gradually</a>
+            <a href="../logout.php" class="logout-btn">Log out</a>
         </div>
         <!--End of header-->
 

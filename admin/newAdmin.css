@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Agbalumo&family=Jua&family=Zen+Maru+Gothic&display=swap');
 body {
-    background-color: #2A3B47ff;
+    background-color: #6C858Dff;
     background-repeat: no-repeat;
     background-size: cover; 
     font-family: "Zen Maru Gothic", sans-serif;
@@ -27,16 +27,9 @@ body {
     color:#2A3B47ff
 }
 
-h1 {
-    font-family: 'Agbalumo', cursive;
-    color: #FFFFFFff;
-    font-size: 50px;
-    margin-bottom: 15px;
-}
-
 h3 {
     font-family: 'Agbalumo', cursive;
-    color: #FFFFFFff;
+    color: white;
     font-size: 30px;
 }
 
@@ -56,9 +49,9 @@ input[type="text"], input[type="password"] {
 }
 
 input[type="submit"] {
-    background-color: #2A3B47ff;
-    color: white;
-    border: 2px solid white;
+    background-color: white;
+    color: 2A3B47ff;
+    border: 2px solid 2A3B47ff;
     padding: 10px 15px;
     border-radius: 8px;
     cursor: pointer;
@@ -68,7 +61,7 @@ input[type="submit"] {
 }
 
 input[type="submit"]:hover {
-    background-color: #090E14ff;
+    background-color: #d6d6d6;
 }
 
 label {
@@ -76,7 +69,6 @@ label {
     color: #D4DDDDff;
     margin-left: 25px;
 }
-
 
 .wrap{
     display: flex;
@@ -101,15 +93,4 @@ a {
 
 a:hover {
     cursor: pointer;
-}
-
-.error-snackbar {
-    background-color: #ffe2e2ff;
-    border: 2px solid #db2525ff;
-    color: #db2525ff;
-    padding: 10px;
-    text-align: center;
-    border-radius: 5px;
-    margin-bottom: 15px;
-    animation: fadein 0.5s;
 }

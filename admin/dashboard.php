@@ -53,6 +53,7 @@ $result = mysqli_query($con, $sql);
     <link rel="stylesheet" href="dashboard.css">
 </head>
 <body>
+<a href="newAdmin.php" class="newAdmin-btn">Add new admin</a>
 <a href="logout.php" class="logout-btn">Log out</a>
 <h1>User Activity Summary</h1>
 

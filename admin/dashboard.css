@@ -56,3 +56,24 @@ a.logout-btn:hover,
 a.logout-btn:active {
   text-decoration: none;
 }
+
+.newAdmin-btn {
+  position: absolute;
+  top: 20px;
+  left: 20px; 
+  text-decoration: none;
+  background-color: #2B3C48ff;
+  color: #D4DEDDff;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+a.newAdmin-btn,
+a.newAdmin-btn:visited,
+a.newAdmin-btn:hover,
+a.newAdmin-btn:active {
+  text-decoration: none;
+}
