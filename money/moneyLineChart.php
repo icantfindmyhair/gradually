@@ -375,14 +375,37 @@ $userId = $_SESSION['user_id'];
         const options = {
             responsive: true,
             plugins: {
-            legend: {
-                position: 'top',
+                legend: {
+                    labels: {
+                        font: {
+                            size: 20
+                        }
+                    },
+                    position: 'top',
+                    
+                },
+                title: {
+                    display: false,
+                }
             },
-            title: {
-                display: false,
-            }
+            scales: {
+                x:{
+                    ticks:{
+                        font:{
+                            size:16
+                        }
+                    }
+                },
+                y:{
+                    ticks:{
+                        font:{
+                            size:16
+                        }
+                    }
+                }
             }
         };
+
 
         //draw line with chart.js
         const line = document.getElementById('moneyLine');
