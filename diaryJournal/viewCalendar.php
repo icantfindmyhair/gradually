@@ -61,6 +61,18 @@
 
                 <div id="calendar"></div>
             </div>
+
+            <!-- Modern Modal Dialog -->
+            <div id="customModal" class="modal hidden">
+                <div class="modal-content">
+                    <p id="modalMessage"></p>
+                    <div class="modal-buttons">
+                        <button id="modalConfirm">Yes</button>
+                        <button id="modalCancel">No</button>
+                    </div>
+                </div>
+            </div>
+
             <!--End of Calendar System-->
             
         </div>
