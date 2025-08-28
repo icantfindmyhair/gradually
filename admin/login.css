@@ -1,0 +1,184 @@
+@import url('https://fonts.googleapis.com/css2?family=Agbalumo&family=Jua&family=Zen+Maru+Gothic&display=swap');
+body {
+    background-color: #2A3B47ff;
+    background-repeat: no-repeat;
+    background-size: cover; 
+    font-family: "Zen Maru Gothic", sans-serif;
+    margin-top: 8rem;
+    padding: 0;
+}
+
+.title {
+    font-family: 'Agbalumo', cursive;
+    font-size: 32px;
+    color: #6C858Dff;
+}
+
+.form {
+    border-radius: 15px;
+    padding: 30px;
+    max-width: 350px;
+    margin: 50px auto;
+    text-align: center;
+}
+
+.form input {
+    font-family: "Zen Maru Gothic", sans-serif;
+    color:#2A3B47ff
+}
+
+h1 {
+    font-family: 'Agbalumo', cursive;
+    color: #FFFFFFff;
+    font-size: 50px;
+    margin-bottom: 15px;
+}
+
+h3 {
+    font-family: 'Agbalumo', cursive;
+    color: #FFFFFFff;
+    font-size: 30px;
+}
+
+p {
+    font-family: "Zen Maru Gothic", sans-serif;
+    color: white;
+    font-size: 15px;
+}
+
+input[type="text"], input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    border: 2px solid #563921;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+input[type="submit"] {
+    background-color: #2A3B47ff;
+    color: white;
+    border: 2px solid white;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: "Zen Maru Gothic", sans-serif;
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+input[type="submit"]:hover {
+    background-color: #090E14ff;
+}
+
+label {
+    font-size: 15px;
+    color: #D4DDDDff;
+    margin-left: 25px;
+}
+
+
+.wrap{
+    display: flex;
+    justify-content: space-between;
+    text-align: center;
+}
+
+.wrap button{
+    background-color: transparent;
+    border: none;
+    text-decoration: underline;
+    color: white;
+    font-family: "Zen Maru Gothic", sans-serif;
+    font-size: 15px;
+    cursor: pointer;
+}
+a {
+    color:  #D4DDDDff;
+    text-decoration-style: underline;
+    font-size: 15px;
+}
+
+a:hover {
+    cursor: pointer;
+}
+
+.error-snackbar {
+    background-color: #ffe2e2ff;
+    border: 2px solid #db2525ff;
+    color: #db2525ff;
+    padding: 10px;
+    text-align: center;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    animation: fadein 0.5s;
+}
+
+@keyframes fadein {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+
+.popup{
+    width:300px;
+    max-height: 500px;
+  background: #D4DEDDff;
+  border-radius: 6px;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(1);
+  padding: 15px;
+  font-size: 24px;
+  border-style: ridge;
+  visibility: hidden;
+  transition: transform 0.4s, top 0.4s;
+  display: grid;
+  justify-content: center;
+}
+
+.popup > p{
+    color: black; 
+    font-size: 32px;
+    font-family: 'Agbalumo', cursive;
+}
+
+
+.popup form p{
+    color: black; 
+    font-size: 24px;
+    font-family: "Zen Maru Gothic", sans-serif;
+}
+
+.popup form{
+    display: grid;
+}
+
+.popup 
+input[type="email"]{
+    width: 230px;
+    padding: 10px;
+    margin: 8px 0;
+    border: 2px solid #563921;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.open-popup{
+  visibility: visible;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.close{
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    width:30px;
+    height: 30px;
+    position: relative;
+    left: 90%;
+}
+.close:hover{
+    color: #3b3939;
+}

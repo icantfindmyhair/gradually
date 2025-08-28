@@ -28,7 +28,7 @@ require ROOT_PATH.'/database.php';
     <div class="top-bar">
         <button class="hamburger">&#9776;</button>
         <a href="../homepage.php" class="title">Gradually</a>
-        <a href="logout.php" class="logout-btn">Log out</a>
+        <a href="../logout.php" class="logout-btn">Log out</a>
     </div>
 
     <div class="main-content">

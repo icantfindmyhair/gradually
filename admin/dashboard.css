@@ -1,0 +1,58 @@
+body {
+    font-family: 'Zen Maru Gothic', sans-serif;
+    padding: 20px;
+    background: #D4DEDDff;
+}
+
+h1 {
+    font-family: 'Agbalumo', cursive;
+    text-align: center;
+}
+
+table {
+    width: 80%;
+    margin: 20px auto;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    background: #fff;
+}
+
+th, td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+th {
+    background: #2B3C48ff;
+    color: #fff;
+}
+
+tr:nth-child(even) {
+    background: #f2f2f2;
+}
+
+.highlight {
+    font-weight: bold;
+    color: #2B3C48ff;
+}
+
+.logout-btn {
+  position: absolute;
+  align-self: center;
+  right: 20px;
+  text-decoration: none;
+  background-color: #2B3C48ff;
+  color: #D4DEDDff;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+a.logout-btn,
+a.logout-btn:visited,
+a.logout-btn:hover,
+a.logout-btn:active {
+  text-decoration: none;
+}
