@@ -22,7 +22,8 @@
         <!--Sidebar-->
         <?php
         define('BASE_PATH', dirname(__DIR__));
-        include BASE_PATH.'/hamburger.php'; ?>
+        include BASE_PATH.'/hamburger.php'; 
+        ?>
         <script src="../hamburger.js"></script>
 
         <!--Script-->
