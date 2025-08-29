@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
+
     // =================== Mood Picker ===================
     const moodDisplay = document.getElementById('moodDisplay');
     const moodPicker = document.getElementById('moodPicker');
@@ -10,7 +11,6 @@ document.addEventListener("DOMContentLoaded", function () {
     let moodPickerVisible = false;
 
     if (moodDisplay && moodPicker) {
-        // Get default category from PHP
         const defaultCategory = "<?= $firstCategory ?>";
 
         function activateCategoryTab(category) {
@@ -35,30 +35,29 @@ document.addEventListener("DOMContentLoaded", function () {
 
         categoryTabs.forEach(tab => {
             tab.addEventListener('click', function () {
-                const category = this.dataset.category;
-                activateCategoryTab(category);
+                activateCategoryTab(this.dataset.category);
             });
         });
 
-       emojiIcons.forEach(icon => {
-    icon.addEventListener('click', function () {
-        const clickedSrc = this.getAttribute('data-emoji-src');
-        const clickedId = this.getAttribute('data-emoji-id'); 
+        emojiIcons.forEach(icon => {
+            icon.addEventListener('click', function () {
+                const clickedSrc = this.getAttribute('data-emoji-src');
+                const clickedId = this.getAttribute('data-emoji-id');
+                const existingEmoji = selectedEmojiSpan.querySelector('img');
 
-        const existingEmoji = selectedEmojiSpan.querySelector('img');
+                if (existingEmoji && existingEmoji.getAttribute('src') === clickedSrc) {
+                    selectedEmojiSpan.innerHTML = '';
+                    hiddenMoodInput.value = '';
+                } else {
+                    selectedEmojiSpan.innerHTML = `<img src="${clickedSrc}" width="48" height="48" />`;
+                    hiddenMoodInput.value = clickedId;
+                }
 
-        if (existingEmoji && existingEmoji.getAttribute('src') === clickedSrc) {
-            selectedEmojiSpan.innerHTML = '';
-            hiddenMoodInput.value = '';
-        } else {
-            selectedEmojiSpan.innerHTML = `<img src="${clickedSrc}" width="48" height="48" />`;
-            hiddenMoodInput.value = clickedId; 
-        }
-
-        moodPicker.style.display = 'none';
-        moodPickerVisible = false;
-    });
-});
+                moodPicker.style.display = 'none';
+                moodPickerVisible = false;
+                isDirty = true;
+            });
+        });
     }
 
     // =================== Weather Picker ===================
@@ -87,61 +86,64 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 weatherPicker.style.display = 'none';
                 weatherPickerVisible = false;
+                isDirty = true;
             });
         });
     }
 
-// =================== Unsaved Changes Warning & Save Handling ===================
-    let isDirty = false;
+    // =================== Unsaved Changes Handling ===================
+    
+    document.addEventListener("DOMContentLoaded", function () {
+        let isDirty = false;
+        let isSubmitting = false;
 
-    const diaryContent = document.getElementById("diary_content");
-    if (diaryContent) {
-        diaryContent.addEventListener("input", () => {
-            isDirty = true;
-    });
-    }
+        const form = document.getElementById('diaryForm');
+        const diaryContent = document.getElementById('diary_content');
+        const saveButton = document.getElementById('saveBtn');
 
-    const diaryFormDelate = document.querySelector('form');
-    if (diaryFormDelate) {
-        diaryFormDelate.addEventListener('submit', function (e) {
-            if (isSubmitting) {
-                e.preventDefault();
-                return false;
-            }
-
-            isSubmitting = true;
-            isDirty = false; // Prevent unsaved warning
-            window.onbeforeunload = null; // Remove warning on submit
-        });
-    }
-
-    window.addEventListener("beforeunload", function (e) {
-        if (isDirty) {
-            const confirmationMessage = "You have unsaved changes. Save, Discard, or Cancel?";
-            (e || window.event).returnValue = confirmationMessage;
-            return confirmationMessage;
+        // Track changes
+        if (diaryContent) {
+            diaryContent.addEventListener("input", () => {
+                isDirty = true;
+            });
         }
-    });
 
-    // =================== Saving ===================
-    let isSubmitting = false;
-
-    const diaryForm = document.querySelector('form');
-    if (diaryForm) {
-        diaryForm.addEventListener('submit', function (e) {
-            if (isSubmitting) {
-                e.preventDefault();
-                return false;
-            }
-
-            isSubmitting = true;
-            isDirty = false; // Prevent unsaved warning
+        // Add listeners to mood/weather icons if they exist
+        document.querySelectorAll('.emoji-icon, .weather-icon').forEach(icon => {
+            icon.addEventListener('click', () => {
+                isDirty = true;
+            });
         });
-    }
 
+        // Handle form submission
+        if (form) {
+            form.addEventListener('submit', function (e) {
+                if (isSubmitting) {
+                    e.preventDefault(); // Prevent second submission
+                    return;
+                }
+
+                console.log("Submitting form...");
+
+                isSubmitting = true;
+                isDirty = false;
+                window.onbeforeunload = null;
+
+                if (saveButton) {
+                    saveButton.disabled = true;
+                }
+
+                // Do NOT prevent default so that the form submits normally
+            });
+        }
+
+        // Warn before leaving unsaved
+        window.addEventListener("beforeunload", function (e) {
+            if (isDirty && !isSubmitting) {
+                const confirmationMessage = "You have unsaved changes. Save, Discard, or Cancel?";
+                (e || window.event).returnValue = confirmationMessage;
+                return confirmationMessage;
+            }
+        });
+    });
 });
-
-// =================== Delate ===================
-function confirmDelete() {
-    return confirm("Are you sure you want to delete this diary entry?");
-}

@@ -59,7 +59,7 @@ $firstCategory = array_key_first($moodsByCategory);
             <!--End of Hero Section (Top)-->
 
             <!--Start of Write Diary Section-->
-            <form method="POST" action="save_diary.php">
+            <form id="diaryForm" method="POST" action="save_diary.php">
                 <!--Date-->
                 <label>Date:</label>
                 <span class="readonly-date"><?php echo htmlspecialchars($date); ?></span>
@@ -121,7 +121,7 @@ $firstCategory = array_key_first($moodsByCategory);
                 <br><br>
 
                 <!-- Save Button with HTML Icon -->
-                <button type="submit" class="save-button">&#128190; Save</button>
+                <button type="submit" id="saveBtn" class="save-button">&#128190; Save</button>
             </form>
             <!--End of Write Diary Section-->
             
