@@ -367,8 +367,8 @@ $userId = $_SESSION['user_id'];
                 {
                     label: 'Income',
                     data: filledValInc,
-                    borderColor: 'rgb(167, 246, 209)',
-                    backgroundColor: 'rgb(167, 246, 209)',
+                    borderColor: 'rgba(18, 214, 123, 1)',
+                    backgroundColor: 'rgba(18, 214, 123, 1)',
                 }
             ]
         };

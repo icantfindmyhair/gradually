@@ -372,7 +372,7 @@ if (isset($_GET['trans_id']) && ctype_digit($_GET['trans_id'])): ?>
                         else {
                             while($row = mysqli_fetch_assoc($result4)) {
                         ?>
-                        <div class="wraphistory coiny-regular" onclick="openPopup(<?php echo $row['trans_id']; ?>)" oncontextmenu="if(confirm('Delete this transaction?')) {window.location.href='moneyTransDelete.php?trans_id=<?php echo $row['trans_id']; ?>'; } return false;">
+                        <div class="wraphistory coiny-regular" onclick="openPopup(<?php echo $row['trans_id']; ?>)" oncontextmenu="if(confirm('Delete this transaction?')) {window.location.href='./moneyTransDelete.php?trans_id=<?php echo $row['trans_id']; ?>'; } return false;">
                             <div class="date"><?php echo $row['day']."|".$row['month'] ?></div>
                             <div class="wrapName">
                                 <div class="name"><?php echo $row['description'] ?></div>
